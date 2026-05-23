@@ -1,0 +1,11 @@
+# Ignore large puzzle database file
+lichess_db_puzzle.csv.zst
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+
+# Editor artifacts
+*.swp
+*.swo
+.vscode/
