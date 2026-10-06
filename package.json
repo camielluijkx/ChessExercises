@@ -4,8 +4,9 @@
   "scripts": {
     "test": "node --test tests/*.test.js",
     "coverage": "node scripts/coverage.js",
-    "web:start": "npm --prefix web start",
-    "web:build": "npm --prefix web run build",
-    "web:test": "npm --prefix web test -- --watch=false --browsers=ChromeHeadless"
+    "web:export": "node scripts/export-for-angular.js",
+    "web:start": "npm run web:export && npm --prefix web start",
+    "web:build": "npm run web:export && npm --prefix web run build",
+    "web:test": "npm run web:export && npm --prefix web test -- --watch=false --browsers=ChromeHeadless"
   }
 }

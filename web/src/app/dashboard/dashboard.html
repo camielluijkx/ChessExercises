@@ -1,6 +1,31 @@
 <section class="dashboard">
   <h1>Tactische voortgang</h1>
-  <p class="placeholder">Dashboard volgt in een later ticket (leerdoelen, Doorgaan).</p>
+
+  <section class="stap" aria-labelledby="stap1-heading">
+    <h2 id="stap1-heading">Stap 1</h2>
+    @if (curriculumError()) {
+      <p class="error" role="alert">{{ curriculumError() }}</p>
+    } @else if (!curriculumReady()) {
+      <p class="muted">Leerdoelen laden…</p>
+    } @else {
+      <ul class="leerdoelen">
+        @for (skill of stap1Leerdoelen(); track skill.id) {
+          <li>{{ skill.label.nl }}</li>
+        }
+      </ul>
+    }
+  </section>
+
+  <p class="bank-status" aria-live="polite">
+    @if (puzzleError()) {
+      <span class="error">{{ puzzleError() }}</span>
+    } @else if (!puzzleReady()) {
+      Puzzelbank laden…
+    } @else {
+      Puzzelbank geladen: {{ puzzleCount() }} stellingen
+    }
+  </p>
+
   <aside class="disclaimer" aria-label="Afbakening">
     <p>Alleen gedekte tactische vaardigheden; geen volledig Stappendiploma.</p>
     <p class="muted">

@@ -16,3 +16,4 @@ __pycache__/
 web/node_modules/
 web/dist/
 web/.angular/
+web/public/data/*.json
