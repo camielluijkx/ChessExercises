@@ -4,8 +4,15 @@ lichess_db_puzzle.csv.zst
 # Python artifacts
 __pycache__/
 *.py[cod]
+.venv/
 
 # Editor artifacts
 *.swp
 *.swo
 .vscode/
+.idea/
+
+# Angular app
+web/node_modules/
+web/dist/
+web/.angular/

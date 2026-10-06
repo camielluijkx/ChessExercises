@@ -1,212 +1,138 @@
-# Chess Exercises – Stappenmethode
+# ChessExercises — tactische beheersing
 
-An interactive, browser-based chess puzzle trainer aligned with the **Stappenmethode** (Steps Method) curriculum — the structured Dutch chess teaching system used widely in youth coaching. Puzzles are sourced from the [Lichess open puzzle database](https://database.lichess.org/#puzzles) (CC0 licence).
+Een browsertrainer met een leerdoelenkaart gebaseerd op de Stappenmethode. **Leerstof, voorkennis en oplossingsdiepte sturen het aanbod.** Een puzzelrating bepaalt geen stap en geeft geen vrijstelling. De app volgt alleen gedekte tactische vaardigheden; zij bewijst geen volledige beheersing van de officiële Stappenmethode of toepassing in partijen.
 
----
+## Starten
 
-## Features
+### Angular-app (in opbouw)
 
-- 6 difficulty levels (Stap 1–6) matching the Stappenmethode progression
-- 14 tactical themes: mate-in-1/2, fork, pin, discovered check, double check, promotion, intermezzo, skewer, deflection, decoy, overloading, clearance, and more
-- Fully playable chessboard rendered in the browser — no server required
-- Dutch / English UI toggle
-- Hint, reset, and board-flip controls
-- Move history with colour-coded correct/wrong moves
-- Custom puzzle JSON upload for offline or curated sets
-- Responsive layout (desktop and mobile)
+Nieuwe UI-shell (NL-only) volgens ADR 0002. Placeholders voor dashboard, oefenen en toets:
 
----
-
-## Repository structure
-
-```
-chess-exercises/
-├── build_puzzles.py          # Offline data-pipeline: reads Lichess CSV → writes puzzles.js
-├── lichess_db_puzzle.csv.zst # Lichess puzzle DB (zstandard-compressed, ~4 M puzzles)
-├── puzzles.js                # Auto-generated puzzle data (committed output)
-└── chess_exercises.html      # Self-contained frontend app
+```bash
+cd web
+npm start
 ```
 
----
+Open `http://localhost:4200/` (`/`, `/oefenen`, `/toets`). Root-scripts: `npm run web:start`, `npm run web:build`.
 
-## How it works
+### Vanilla UI (huidige speelbare app)
 
-### High-level pipeline
+Open `chess_exercises.html` voor eenvoudige, exact beoordeelbare opgaven. Voor de lokale engine en langere varianten serveer je het project via localhost:
 
-```mermaid
-flowchart LR
-    A["lichess_db_puzzle.csv.zst\n(~4 M puzzles)"] -->|zstandard stream| B["build_puzzles.py"]
-    B -->|reservoir sampling\n+ validation| C["puzzles.js\n(curated JSON)"]
-    C -->|&lt;script src&gt;| D["chess_exercises.html"]
-    D -->|rendered in browser| E["Interactive\nChessboard"]
+```bash
+cd /Users/glenn/repositories/ChessExercises
+python3 -m http.server 8080
 ```
 
-### Data pipeline — `build_puzzles.py`
+Open vervolgens `http://localhost:8080/chess_exercises.html`. Stockfish en de regelsbibliotheek zijn lokaal gebundeld; antwoorden worden niet naar een externe dienst gestuurd. De trainer ondersteunt Nederlands en Engels, bord draaien, promotiekeuze en eigen puzzelsets.
 
-The script processes the compressed Lichess CSV in a single streaming pass without loading it all into memory.
+- **Volgende oefening** biedt alleen passende leerstof, gerichte basisherhaling of eerder beheerste stof. Hints en feedback per zet blijven tijdens oefenen mogelijk.
+- **Start instaptoets** geeft een korte screening van beschikbare gecontroleerde onderdelen, vanaf de basis. Dit levert oefenadvies, geen beheersingsvrijstelling. De beheersingstoetsvoorraad blijft gereserveerd.
+- **Start beheersingstoets** start bewust een gemengde reeks van beschikbare leerdoelen. Een geselecteerd oefenthema bepaalt niet het toetsantwoord. De doelen, hints en feedback zijn tijdens de reeks verborgen.
+- Voer tijdens toetsing **beide kleuren** op het bord in, of typ de volledige variant in UCI-notatie, bijvoorbeeld `e2e4 e7e5 g1f3`. Je mag niet-ingediende invoer verbeteren; er volgt geen bevestiging van een goede zet tussendoor. Klik daarna op **Variant indienen**. Uitleg volgt na de reeks.
+- Een optionele moeilijkheidsvoorkeur, bijvoorbeeld **2200**, rangschikt alleen oefenopgaven binnen toegestane leerstof.
 
-```mermaid
-flowchart TD
-    A[Open .csv.zst with zstandard] --> B[Stream rows via csv.DictReader]
-    B --> C{Rating → Stap level\n1–6}
-    C --> D{Puzzle themes match\napplicable types\nfor that level?}
-    D -->|No| B
-    D -->|Yes| E{Solution length\npasses filter?}
-    E -->|No| B
-    E -->|Yes| F[Reservoir-sample into\nlevel×type bucket\n20 puzzles each]
-    F --> B
-    B -->|EOF| G[Convert each row:\napply setup move,\nbuild pieces list]
-    G --> H[Validate with python-chess:\nlegal position + legal solution\n+ correct endpoint]
-    H -->|Invalid| I[Drop puzzle]
-    H -->|Valid| J[Collect into all_puzzles]
-    J --> K[Sort: level → type → id]
-    K --> L[Write puzzles.js]
+## Beheersingsregels
+
+Per verplicht onderdeel zijn twintig verschillende, ongeziene, beoordeelbare toetsopgaven nodig: twee reeksen van tien, met **minimaal 24 uur** ertussen. Minstens achttien moeten zelfstandig correct zijn. Beschikbare onderdelen worden gemengd; een sessie kan daardoor meer dan tien opgaven bevatten. Elk onderdeel houdt zijn eigen bewijs en wachttijd.
+
+Een sterk ander onderdeel compenseert geen zwak onderdeel. De volgende stap blijft gesloten zolang vereiste eerdere onderdelen onbewezen zijn. De gebruikelijke tactische diepte is 1, 3, 3, 5, 5 ply voor stap 1–5; 7 ply bij stap 6 is een bronafleiding, geen universele regel. Vaardigheid en verdieping blijven bepalend. Inhoudelijke diepte-uitzonderingen moeten worden vastgelegd.
+
+Ongeveer twintig procent van het oefenaanbod betreft eerdere stof. Waar geschikt materiaal bestaat, bevat een gemengde toets ook onderhoud van eerder beheerste vaardigheden. Minder dan acht zelfstandig juiste antwoorden in de laatste tien beoordeelbare toetsen van een onderdeel leidt tot gerichte herhaling. De relevante basisvaardigheden worden opnieuw onderzocht; andere bewezen onderdelen blijven behouden. Herstel vereist een nieuwe beheersingstoets met andere opgaven.
+
+**Ik weet het niet** telt als niet zelfstandig opgelost. De app sluiten is geen fout: de openstaande opgave en ingevoerde variant worden hervat. Onzekere beoordeling telt niet mee in de goed/fout-noemer; de opgave wordt gemarkeerd voor controle en vervangen.
+
+Dit zijn productregels uit het ontwerpgesprek, geen officiële slagingsnormen van de Stappenmethode.
+
+## Huidige dekking — belangrijk
+
+De import van 5 oktober 2026 levert **4.203 legale, verschillende bronstellingen** uit de officiële Lichess-database. De meeste zijn **kandidaten**: tags en lengte geven geen bewijs van een specifiek leerdoel.
+
+Momenteel zijn 185 mat-in-één-stellingen en 111 stellingen voor eenvoudig ongedekt materiaal winnen exact toetsbaar. Voor materiaalwinst kan uit een langere bronpuzzel een eigen, een-ply leerdoel worden afgeleid: een ongedekt stuk slaan zonder onmiddellijke tegenwinst of mat toe te laten. Dat is een afgebakende basisoefening, niet een ingekorte claim dat de volledige Lichess-opgave is opgelost. De bron-ID blijft traceerbaar. Dezelfde beginstelling telt nooit opnieuw als ongezien bewijs.
+
+**Andere leerdoelen missen nog gecontroleerde toetsvoorraad. Daardoor kun je momenteel niet alle onderdelen van stap 1 afvinken en automatisch doorgaan naar stap 2.** Dit verschijnt als *nog onvoldoende toetsmateriaal*. Een tekort wordt niet opgelost met willekeurige opgaven uit een hogere stap of met herhaalde bekende opgaven. Hogere stappen krijgen pas betrouwbare toetsdekking na inhoudelijke beoordeling en antwoordvalidatie. Het raamwerk voor stap 5–6 is daarnaast nog voorlopig.
+
+Controleer de werkelijke dekking:
+
+```bash
+node scripts/coverage.js
+node scripts/coverage.js --json
 ```
 
-**Key design decisions:**
+`docs/assessment-coverage.json` toont toetsgeschikte unieke stellingen; `puzzles.coverage.json` toont alleen de aantallen importkandidaten. Die aantallen hebben verschillende betekenissen.
 
-| Concern | Approach |
-|---|---|
-| Memory | Reservoir sampling keeps exactly 20 candidates per bucket while streaming |
-| FEN handling | Custom Python parser; no library dependency during the scan |
-| Validation | `python-chess` used for legal-move and checkmate verification |
-| Determinism | `random.seed(20260523)` — re-running produces the same output |
-| Non-queen promotions | Dropped (UI auto-promotes to queen) |
+## Voortgang
 
-#### Level → theme mapping
+Voortgang, blootstelling en openstaande toetsen worden in deze browser/site-origin opgeslagen onder `chessExercises.mastery.v2`. Mensen die hetzelfde browserprofiel gebruiken delen deze voortgang. Een andere browser of het wisselen van `file://` naar localhost gebruikt een andere opslagomgeving.
 
-```mermaid
-graph LR
-    S1(Stap 1) --> wm[winst_materiaal]
-    S1 --> m1[mat_in_1]
-    S2(Stap 2) --> wm & m1 & m2[mat_in_2] & fork[tweevoudige_aanval] & disc[aftrekschaak]
-    S3(Stap 3) --> m1 & m2 & fork & disc & dbl[dubbel_schaak] & pin[penning] & pro[promotie]
-    S4(Stap 4) --> m2 & fork & disc & dbl & pin & xray[rontgen_aanval] & afl[afleiding] & pro & tus[tussenspel]
-    S5(Stap 5) --> m2 & pin & xray & afl & ovb[overbelasting] & zur[zuivering] & tus & saw[schaak_en_win] & pro
-    S6(Stap 6) --> m2 & pin & xray & afl & ovb & zur & tus & saw & pro
+Een oudere trainingsrating wordt alleen als historische moeilijkheidsinformatie gelezen. Oude willekeurige oefeningen verlenen geen nieuwe beheersing. Beschadigde opgeslagen voortgang wordt waar mogelijk onder een backup-sleutel bewaard. Als opslag niet beschikbaar is, toont de app dit en werkt zij voor de huidige sessie.
+
+## Puzzelvoorraad uitbreiden
+
+De bron is de [officiële Lichess-puzzeldatabase](https://database.lichess.org/#puzzles), CC0. Gebruik voor bulkimport de database, niet het enumereren van live puzzle-API's.
+
+```bash
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+.venv/bin/python build_puzzles.py \
+  --input /pad/naar/lichess_db_puzzle.csv.zst \
+  --output puzzles.js \
+  --per-skill 150
 ```
 
-### Frontend — `chess_exercises.html`
+Node is nodig om de canonieke leerdoelenkaart te lezen. De generator werkt streamend, met een vaste seed en reservoir sampling per kandidaatleerdoel. Zij controleert legale stellingen en varianten, behoudt promoties en schrijft ook een dekkingsrapport. Er zijn geen vaste Windows-paden of ratinggrenzen voor de stappen meer.
 
-A single self-contained HTML file; everything runs in the browser with no build step.
+Tags en ply leveren alleen **voorstellen**. Verifieer de benodigde kennis, voorbereiding, het tactische doel en de verdediging vóór een opgave toetsgeschikt wordt. Bronverwijzingen voor de leerdoelen staan in `curriculum.js` en `docs/stappenmethode-research.md`. De voorkennisrelaties zijn een expliciet appontwerp.
 
-```mermaid
-flowchart TD
-    subgraph Startup
-        A[Load puzzles.js] --> B[Render board\nfrom pieces array]
-        B --> C[User picks level + theme]
-    end
-    subgraph Puzzle loop
-        C --> D[Pick random puzzle\nfrom matching bucket]
-        D --> E[Opponent's setup move\nalready applied by build_puzzles.py]
-        E --> F{User drags/clicks a piece}
-        F --> G{Move matches\nnext solution move?}
-        G -->|Correct| H[Apply move, show ✓\nOpponent auto-plays reply]
-        H --> I{Solution\ncomplete?}
-        I -->|No| F
-        I -->|Yes| J[🏆 Puzzle solved!]
-        G -->|Wrong| K[Show ✗, keep position]
-        K --> F
-    end
-    subgraph Controls
-        L[Hint] --> M[Highlight source square\nof next move]
-        N[Reset] --> E
-        O[Flip board] --> B
-        P[New Puzzle] --> D
-    end
-```
+## Gecontroleerde opgaven toevoegen
 
-#### Puzzle data format (inside `puzzles.js`)
+Voor niet-elementaire toetsopgaven kun je een reviewmanifest aan de generator meegeven met `--reviews reviews.json`, of `curriculum`-metadata opnemen in een eigen JSON-puzzelset. Eén primair leerdoel per onafhankelijke toetsstelling voorkomt dubbel bewijs. Bijvoorbeeld:
 
-```js
+```json
 {
-  id:       "lichess_AbCdE",   // "lichess_" + Lichess PuzzleId
-  level:    3,                 // Stap 1–6
-  type:     "mat_in_2",        // theme key
-  turn:     "w",               // side to move ("w" or "b")
-  pieces: [
-    { sq: "e1", piece: "wK" }, // white King on e1
-    { sq: "e8", piece: "bK" }, // black King on e8
-    // ...
-  ],
-  solution: ["e2e4", "e7e5"],  // UCI moves the *player* must play (+ opponent replies)
-  castling: "KQkq",
-  ep:       null,              // en-passant target square or null
-  rating:   1450,
-  themes:   ["mateIn2", "backRankMate"],
-  url:      "https://lichess.org/game/..."
+  "lichess_XXXXX": {
+    "reviewed": true,
+    "reviewSource": "Eigen inhoudelijke beoordeling: voorbereiding door lokken; bron stap 4",
+    "skillIds": ["s4.attraction"],
+    "verification": {
+      "kind": "engine",
+      "objective": { "kind": "material", "gain": 1 }
+    }
+  }
 }
 ```
 
----
+Dit voorbeeld is een schema, geen reeds beoordeelde opgave. Een verklaarde afwijking in lengte krijgt een `depthException`. Een review moet daadwerkelijk onderbouwen dat de positie het gekozen leerdoel traint; de software kan die pedagogische beoordeling niet uit een tag afleiden.
 
-## Setup & usage
+Ondersteunde antwoordcontrole:
 
-### 1. Re-generate `puzzles.js` (optional)
+- `mate`: exacte minimax voor korte matopgaven, inclusief zo lang mogelijk weerstand bieden; een begrensde zoekruimte kan onzekerheid opleveren.
+- `safeCapture`: een precies afgebakende één-ply basisoefening met controle van onmiddellijke tegenwinst en mat.
+- `tree`: inhoudelijk gecontroleerde legale antwoordvarianten, `defenceReviewed: true` en een lijst `lines`. Een niet-opgenomen alternatief blijft onbeoordeeld.
+- `engine`: lokale Stockfish-controle van iedere eigen zet én tegenzet, gevolgd door het mat- of materiaaldoel. Beperkte zoekdiepte is geen wiskundig bewijs. Ondiepe, begrensde of tegenstrijdige evaluaties blijven onbeoordeeld. De conservatieve CP-grenzen zijn implementatiekeuzes, geen onderwijsnormen.
 
-> Only needed if you want to rebuild from the Lichess database.
+Een conflicterende leerdoelindeling voor dezelfde stelling maakt die stelling ongeschikt voor toetsing. Daarmee wordt een herlabelde opgave geen nieuw bewijs.
 
-**Requirements:**
-```
-python >= 3.9
-pip install zstandard chess
-```
+## Projectstructuur
 
-**Download the puzzle database:**
-```
-https://database.lichess.org/#puzzles
-→ save as lichess_db_puzzle.csv.zst in the workspace root
-```
+- `chess_exercises.html`: bord en bestaande visuele layout.
+- `curriculum.js`: brononderbouwde tactische doelen, diepte en expliciete voorkennis.
+- `mastery.js`: bewijs, onafhankelijke voorraad, instapadvies, gemengde toetsen, onderhoud en terugval.
+- `assessment.js`: schaakregelsadapter, stellingidentiteit, basisdoelen en volledige-variantbeoordeling.
+- `training-ui.js`: oefenen/toetsen, verborgen thema's, feedback en hervatten.
+- `assessment-worker.js`, `engine-client.js`: lokale achtergrondcontrole en UCI-adapter.
+- `build_puzzles.py`, `puzzles.js`: import en kandidaatvoorraad.
+- `vendor/`: chess.js en Stockfish.js met licenties en bronverwijzingen.
+- `docs/`: onderzoek, bevestigd ontwerp en daadwerkelijke toetsdekking.
+- `tests/`: model-, antwoord-, UI-integratie- en echte enginecontroles.
 
-**Run:**
-```bash
-python build_puzzles.py
-```
-
-The script prints progress every 500 000 rows and a per-bucket summary at the end.
-
-### 2. Open the app
-
-No server required — just open `chess_exercises.html` in any modern browser:
+## Verificatie
 
 ```bash
-# Windows
-start chess_exercises.html
-
-# macOS / Linux
-open chess_exercises.html
+npm test
+python3 -m py_compile build_puzzles.py
 ```
 
-Or serve it locally for a cleaner experience:
-```bash
-python -m http.server 8080
-# then visit http://localhost:8080/chess_exercises.html
-```
+De Node-tests gebruiken geen extra npm-installatie. De UI-integratietests draaien met een DOM-adapter; ze zijn geen visuele browsertest.
 
----
-
-## Tactical themes reference
-
-| Dutch name | English | Lichess tag(s) |
-|---|---|---|
-| winst_materiaal | Win material | `hangingPiece` |
-| mat_in_1 | Mate in 1 | `mateIn1` |
-| mat_in_2 | Mate in 2 | `mateIn2` |
-| tweevoudige_aanval | Fork | `fork` |
-| aftrekschaak | Discovered check | `discoveredAttack`, `discoveredCheck` |
-| dubbel_schaak | Double check | `doubleCheck` |
-| penning | Pin | `pin` |
-| rontgen_aanval | X-ray / Skewer | `xRayAttack`, `skewer` |
-| afleiding | Decoy / Attraction | `attraction` |
-| overbelasting | Overloading / Deflection | `deflection` |
-| promotie | Promotion | `promotion`, `underPromotion` |
-| tussenspel | Intermezzo | `intermezzo` |
-| zuivering | Clearance | `capturingDefender`, `clearance` |
-| schaak_en_win | Check and win | `discoveredCheck` |
-
----
-
-## Licence
-
-Puzzle data: [Lichess open puzzle database](https://database.lichess.org/#puzzles) — **CC0 (public domain)**  
-Code: see repository licence.
+Puzzeldata: CC0. chess.js: BSD-2-Clause. Stockfish.js: GPLv3; zie `vendor/`. Officiële Stappenmethode-bronnen worden gebruikt voor de leerdoelenstructuur en bronverwijzingen; werkboekopgaven zijn niet overgenomen.

@@ -1,0 +1,482 @@
+[
+  {
+    "ok": true,
+    "gain": 0,
+    "midGain": 3,
+    "fen": "8/5p2/p1pk2pp/1p6/1KbP1P2/6PP/1P6/5B2 w - - 0 1",
+    "sol": [
+      "f1c4"
+    ],
+    "id": "lichess_nRrvK",
+    "rating": 806,
+    "captured": "b"
+  },
+  {
+    "ok": true,
+    "gain": 0,
+    "midGain": 5,
+    "fen": "2k1rr2/ppp4p/4Npn1/3p1n2/P5b1/1PP5/3N1PPP/R3R1K1 w - - 0 1",
+    "sol": [
+      "e6f8"
+    ],
+    "id": "lichess_pGVNB",
+    "rating": 1016,
+    "captured": "r"
+  },
+  {
+    "ok": true,
+    "gain": 0,
+    "midGain": 3,
+    "fen": "5rk1/p4ppp/2q1p3/2BnP3/2N5/1P6/5PPP/2QR2K1 b - - 0 1",
+    "sol": [
+      "c6c5"
+    ],
+    "id": "lichess_XHo2j",
+    "rating": 1019,
+    "captured": "b"
+  },
+  {
+    "ok": true,
+    "gain": 2,
+    "midGain": 5,
+    "fen": "1k1r2r1/1pp5/p4p1p/1P1p2p1/2P3B1/R5PP/Rb4PK/1N6 b - - 0 1",
+    "sol": [
+      "b2a3"
+    ],
+    "id": "lichess_jnkQ2",
+    "rating": 1035,
+    "captured": "r"
+  },
+  {
+    "ok": true,
+    "gain": 0,
+    "midGain": 5,
+    "fen": "r2qkb1r/pppb1ppR/2n1p3/3p4/3P4/2PBPNP1/PP1N1PP1/R2QK3 b Qkq - 0 1",
+    "sol": [
+      "h8h7"
+    ],
+    "id": "lichess_Re6ok",
+    "rating": 1039,
+    "captured": "r"
+  },
+  {
+    "ok": true,
+    "gain": 0,
+    "midGain": 3,
+    "fen": "r2qkb2/1ppb1p2/p2p3p/6Bn/3PP3/2N4P/PPP2PP1/R2QR1K1 b q - 0 1",
+    "sol": [
+      "d8g5"
+    ],
+    "id": "lichess_fpNSE",
+    "rating": 1066,
+    "captured": "b"
+  },
+  {
+    "ok": true,
+    "gain": 1,
+    "midGain": 1,
+    "fen": "8/p5pp/bp1k1r2/3pp3/3R4/r4B1P/6P1/4R1K1 w - - 0 1",
+    "sol": [
+      "d4d5"
+    ],
+    "id": "lichess_5dr5t",
+    "rating": 1109,
+    "captured": "p"
+  },
+  {
+    "ok": true,
+    "gain": 1,
+    "midGain": 1,
+    "fen": "5r2/1p4pk/p1pppr1p/7q/4PPR1/2PP3P/P1PB2QK/8 w - - 0 1",
+    "sol": [
+      "g4g7"
+    ],
+    "id": "lichess_rvLM0",
+    "rating": 1136,
+    "captured": "p"
+  },
+  {
+    "ok": true,
+    "gain": 0,
+    "midGain": 3,
+    "fen": "3b4/3k4/1p1p4/p2PpKN1/P1P2pP1/1P3P2/8/8 b - - 0 1",
+    "sol": [
+      "d8g5"
+    ],
+    "id": "lichess_LF1Jy",
+    "rating": 1151,
+    "captured": "n"
+  },
+  {
+    "ok": true,
+    "gain": 0,
+    "midGain": 9,
+    "fen": "8/8/4pp1k/2Q2q2/3P3p/7P/5K2/8 w - - 0 1",
+    "sol": [
+      "c5f5"
+    ],
+    "id": "lichess_nlS2S",
+    "rating": 1182,
+    "captured": "q"
+  },
+  {
+    "ok": true,
+    "gain": 0,
+    "midGain": 3,
+    "fen": "2r2rk1/2Bq1pbp/pp2p1p1/8/3P4/P1Q1Pb2/1P3PPP/2R2RK1 w - - 0 1",
+    "sol": [
+      "g2f3"
+    ],
+    "id": "lichess_BDFHZ",
+    "rating": 1252,
+    "captured": "b"
+  },
+  {
+    "ok": true,
+    "gain": 2,
+    "midGain": 5,
+    "fen": "r1b1q1k1/ppp1brp1/3p1n1p/n3P3/2B2P2/1QN5/PP4PP/R1B2RK1 w - - 0 1",
+    "sol": [
+      "c4f7"
+    ],
+    "id": "lichess_nf3U9",
+    "rating": 1262,
+    "captured": "r"
+  },
+  {
+    "ok": true,
+    "gain": 0,
+    "midGain": 3,
+    "fen": "r2qkb1r/pppB1p2/3p1P1p/4n3/8/2N4P/PPP2Pp1/R1BQR1K1 b kq - 0 1",
+    "sol": [
+      "d8d7"
+    ],
+    "id": "lichess_r4h1t",
+    "rating": 1274,
+    "captured": "b"
+  },
+  {
+    "ok": true,
+    "gain": 0,
+    "midGain": 3,
+    "fen": "1n4k1/p1N2ppp/3q4/2p1p3/8/6P1/P3PPBP/1R3K1R b - - 0 1",
+    "sol": [
+      "d6c7"
+    ],
+    "id": "lichess_krGuI",
+    "rating": 1312,
+    "captured": "n"
+  },
+  {
+    "ok": true,
+    "gain": 0,
+    "midGain": 1,
+    "fen": "8/1p6/5Kp1/pk2B2p/5P1P/8/3b4/8 w - - 0 1",
+    "sol": [
+      "f6g6"
+    ],
+    "id": "lichess_qgVRU",
+    "rating": 1317,
+    "captured": "p"
+  },
+  {
+    "ok": true,
+    "gain": 0,
+    "midGain": 3,
+    "fen": "r3r1k1/1bp2ppp/p7/1p1qp1bn/1P3P2/1NPP3P/P3NQP1/R4RK1 w - - 0 1",
+    "sol": [
+      "f4g5"
+    ],
+    "id": "lichess_sNsaC",
+    "rating": 1354,
+    "captured": "b"
+  },
+  {
+    "ok": true,
+    "gain": 8,
+    "midGain": 9,
+    "fen": "r1bNr1k1/3n1ppp/p4n2/2ppp3/5Q2/2NBP3/PPP2PPP/R2R2K1 b - - 0 1",
+    "sol": [
+      "e5f4"
+    ],
+    "id": "lichess_3itFu",
+    "rating": 1377,
+    "captured": "q"
+  },
+  {
+    "ok": true,
+    "gain": 2,
+    "midGain": 5,
+    "fen": "r5k1/5p1p/2p1pQp1/3pP3/P7/B1q5/2P1b2P/R4R1K b - - 0 1",
+    "sol": [
+      "e2f1"
+    ],
+    "id": "lichess_efQ8H",
+    "rating": 1380,
+    "captured": "r"
+  },
+  {
+    "ok": true,
+    "gain": 0,
+    "midGain": 3,
+    "fen": "rq2k2r/pp2bppp/8/1NPpn3/8/P4bP1/1P2BP1P/R2Q1RK1 w kq - 0 1",
+    "sol": [
+      "e2f3"
+    ],
+    "id": "lichess_fMABD",
+    "rating": 1415,
+    "captured": "b"
+  },
+  {
+    "ok": true,
+    "gain": 0,
+    "midGain": 1,
+    "fen": "2k3rr/1ppqn3/3p3b/1p1Pp2p/P1N1Rp1N/2P5/5PPP/R2Q2K1 w - - 0 1",
+    "sol": [
+      "a4b5"
+    ],
+    "id": "lichess_0sQ11",
+    "rating": 1425,
+    "captured": "p"
+  },
+  {
+    "ok": true,
+    "gain": 2,
+    "midGain": 5,
+    "fen": "2q3k1/Q2R1pp1/7p/1pnP4/2p5/P4P1P/6P1/5N1K b - - 0 1",
+    "sol": [
+      "c5d7"
+    ],
+    "id": "lichess_OCkJJ",
+    "rating": 1455,
+    "captured": "r"
+  },
+  {
+    "ok": true,
+    "gain": 0,
+    "midGain": 3,
+    "fen": "5r2/pp6/2pp4/6k1/4P1b1/P2P2KN/1P3P1P/7R b - - 0 1",
+    "sol": [
+      "g4h3"
+    ],
+    "id": "lichess_y60b0",
+    "rating": 1459,
+    "captured": "n"
+  },
+  {
+    "ok": true,
+    "gain": 0,
+    "midGain": 3,
+    "fen": "r2q1rk1/pp2npbp/3p2p1/3Ppb2/2P1N1n1/3BBP2/PP1Q3P/R3K1NR w KQ - 0 1",
+    "sol": [
+      "f3g4"
+    ],
+    "id": "lichess_VcGqp",
+    "rating": 1513,
+    "captured": "n"
+  },
+  {
+    "ok": true,
+    "gain": 2,
+    "midGain": 3,
+    "fen": "1r2r1k1/p5bp/2pQ2p1/q1pp2B1/4n3/3P4/PPP2PPP/2KN1B1R w - - 0 1",
+    "sol": [
+      "d3e4"
+    ],
+    "id": "lichess_EkIAR",
+    "rating": 1522,
+    "captured": "n"
+  },
+  {
+    "ok": true,
+    "gain": 0,
+    "midGain": 3,
+    "fen": "2rq1rk1/pp2bppB/1n6/3P3b/2p5/PnN1BN1P/1P2QPP1/3R1RK1 b - - 0 1",
+    "sol": [
+      "g8h7"
+    ],
+    "id": "lichess_7Mdf0",
+    "rating": 1536,
+    "captured": "b"
+  },
+  {
+    "ok": true,
+    "gain": 0,
+    "midGain": 3,
+    "fen": "r4k1r/2p2p2/nb3qp1/1B1b3p/1B1P4/P4N2/3Q1PPP/R3R1K1 b - - 0 1",
+    "sol": [
+      "a6b4"
+    ],
+    "id": "lichess_G4emT",
+    "rating": 1542,
+    "captured": "b"
+  },
+  {
+    "ok": true,
+    "gain": 3,
+    "midGain": 3,
+    "fen": "8/2p4p/p1p3p1/Pr2Pp2/1BkPp2P/1rP1K3/2R2P2/5R2 b - - 0 1",
+    "sol": [
+      "b5b4"
+    ],
+    "id": "lichess_e12NM",
+    "rating": 1578,
+    "captured": "b"
+  },
+  {
+    "ok": true,
+    "gain": 0,
+    "midGain": 3,
+    "fen": "4rrk1/5ppp/p1b4P/1p1p1Pb1/3Bq3/7Q/PPP5/2KR2R1 w - - 0 1",
+    "sol": [
+      "g1g5"
+    ],
+    "id": "lichess_2NZza",
+    "rating": 1607,
+    "captured": "b"
+  },
+  {
+    "ok": true,
+    "gain": 0,
+    "midGain": 1,
+    "fen": "8/p4p1k/4p1Pp/1p1pPP2/3P2P1/P1P5/3K4/8 b - - 0 1",
+    "sol": [
+      "f7g6"
+    ],
+    "id": "lichess_372O3",
+    "rating": 1641,
+    "captured": "p"
+  },
+  {
+    "ok": true,
+    "gain": 0,
+    "midGain": 5,
+    "fen": "5rk1/4qpp1/p1Rrbn1p/1p6/1P1PP3/P3QP2/6PP/1B3RK1 w - - 0 1",
+    "sol": [
+      "c6d6"
+    ],
+    "id": "lichess_qZzfo",
+    "rating": 1650,
+    "captured": "r"
+  },
+  {
+    "ok": true,
+    "gain": 2,
+    "midGain": 3,
+    "fen": "2r1r1k1/5p1p/1p1BpPB1/pP1pP3/P6q/2P1P1RP/2Q3K1/8 b - - 0 1",
+    "sol": [
+      "h7g6"
+    ],
+    "id": "lichess_yvV7O",
+    "rating": 1660,
+    "captured": "b"
+  },
+  {
+    "ok": true,
+    "gain": 0,
+    "midGain": 3,
+    "fen": "3rrk2/p4ppp/1p6/2p1n3/P1B1n3/7P/1PRN2PK/5R2 w - - 0 1",
+    "sol": [
+      "d2e4"
+    ],
+    "id": "lichess_1Gc5V",
+    "rating": 1687,
+    "captured": "n"
+  },
+  {
+    "ok": true,
+    "gain": 0,
+    "midGain": 9,
+    "fen": "5B2/7p/p7/5P2/3b4/Q2k2P1/6KP/q7 b - - 0 1",
+    "sol": [
+      "a1a3"
+    ],
+    "id": "lichess_qvHbd",
+    "rating": 1689,
+    "captured": "q"
+  },
+  {
+    "ok": true,
+    "gain": 4,
+    "midGain": 5,
+    "fen": "r1b5/1pq3pk/p3p1rp/3R1p2/8/P1B1Q3/1P3PPP/3R1BK1 b - - 0 1",
+    "sol": [
+      "e6d5"
+    ],
+    "id": "lichess_ajyGP",
+    "rating": 1690,
+    "captured": "r"
+  },
+  {
+    "ok": true,
+    "gain": 0,
+    "midGain": 9,
+    "fen": "4rk2/ppp2p1p/3p4/3P4/6nP/PQ2rRR1/1PP2qP1/1K6 w - - 0 1",
+    "sol": [
+      "f3f2"
+    ],
+    "id": "lichess_jBdhr",
+    "rating": 1708,
+    "captured": "q"
+  },
+  {
+    "ok": true,
+    "gain": 0,
+    "midGain": 3,
+    "fen": "2kr2nr/ppp3pp/1q2p3/4b3/3P1p2/3PB1NP/PP1N1PP1/R1Q1R1K1 b - - 0 1",
+    "sol": [
+      "f4e3"
+    ],
+    "id": "lichess_y3axe",
+    "rating": 1723,
+    "captured": "b"
+  },
+  {
+    "ok": true,
+    "gain": 0,
+    "midGain": 3,
+    "fen": "r3r1k1/2p2pbp/2q3p1/ppN3B1/1P2p1P1/2P3Q1/P1Nn1P1P/2R3K1 w - - 0 1",
+    "sol": [
+      "g5d2"
+    ],
+    "id": "lichess_L1ZYo",
+    "rating": 1725,
+    "captured": "n"
+  },
+  {
+    "ok": true,
+    "gain": 0,
+    "midGain": 1,
+    "fen": "4r2k/1p1r2p1/pp1Bn2q/4PR2/1P1P3p/P7/5P1P/R5QK b - - 0 1",
+    "sol": [
+      "e6d4"
+    ],
+    "id": "lichess_MVKYO",
+    "rating": 1733,
+    "captured": "p"
+  },
+  {
+    "ok": true,
+    "gain": 2,
+    "midGain": 5,
+    "fen": "3r1rk1/b1q3pp/p3R3/5p2/2Nn4/PPQ2N2/2P2PPP/4R1K1 b - - 0 1",
+    "sol": [
+      "d4e6"
+    ],
+    "id": "lichess_XNeD5",
+    "rating": 1776,
+    "captured": "r"
+  },
+  {
+    "ok": true,
+    "gain": 2,
+    "midGain": 3,
+    "fen": "r4rk1/pb1q1ppp/1p1p1B2/8/3QpP2/P6P/1P2B1P1/R4RK1 b - - 0 1",
+    "sol": [
+      "g7f6"
+    ],
+    "id": "lichess_DY4ze",
+    "rating": 1793,
+    "captured": "b"
+  }
+]

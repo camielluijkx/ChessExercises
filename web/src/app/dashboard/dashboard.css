@@ -1,0 +1,26 @@
+.dashboard h1 {
+  margin: 0 0 0.5rem;
+  font-size: 1.5rem;
+}
+
+.placeholder {
+  margin: 0 0 1.5rem;
+  color: #555;
+}
+
+.disclaimer {
+  max-width: 36rem;
+  padding: 0.75rem 1rem;
+  border-left: 3px solid #2c5530;
+  background: #f4f7f4;
+}
+
+.disclaimer p {
+  margin: 0;
+}
+
+.disclaimer .muted {
+  margin-top: 0.35rem;
+  color: #555;
+  font-size: 0.95rem;
+}

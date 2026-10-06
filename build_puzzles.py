@@ -1,328 +1,162 @@
 #!/usr/bin/env python3
-"""Build curated puzzles.js for chess_exercises.html from the Lichess open puzzle DB.
+"""Stream the official CC0 Lichess CSV into curriculum candidates.
 
-Lichess puzzle DB (CC0): https://database.lichess.org/#puzzles
-
-CSV columns:
-  PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,NbPlays,Themes,GameUrl,OpeningTags
-
-Each row's FEN is the position *before* the opponent makes a setup move. The first
-UCI move in Moves is the opponent's setup; the remaining moves form the solution
-the player must find. So our app's starting position = parse_fen + apply(move0),
-and the side-to-move flips to the player.
+Tags/depth propose learning goals; they never grant reviewed classification.
+Provide a separate, explicit review manifest for non-elementary assessments.
 """
+import argparse
+import csv
+import io
+import json
+from pathlib import Path
+import random
+import subprocess
 
-import zstandard, io, csv, json, random, os, sys
-from collections import defaultdict
 
-INPUT  = r'D:\Workspace\chess-exercises\lichess_db_puzzle.csv.zst'
-OUTPUT = r'D:\Workspace\chess-exercises\puzzles.js'
+def load_curriculum(path):
+    result = subprocess.run(['node', '-e', 'console.log(JSON.stringify(require(process.argv[1]).skills))', str(path.resolve())], check=True, capture_output=True, text=True)
+    return json.loads(result.stdout)
 
-random.seed(20260523)
 
-PER_BUCKET = 20  # puzzles per (level, type) bucket
+def candidates(tags, ply, skills):
+    """Tag/ply proposals only — never reviewed classification."""
+    return [s['id'] for s in skills if s['tags'] and (s['ply'] == ply or (s['id'] == 's1.capture' and 'hangingPiece' in tags)) and
+            (all(tag in tags for tag in s['tags']) if s['id'] in ('s4.pinattraction', 's4.magnet') else any(tag in tags for tag in s['tags']))]
 
-# Stap level x applicable theme buckets (mirrors LEVEL_THEMES in chess_exercises.html)
-LEVEL_THEMES = {
-    1: ['winst_materiaal', 'mat_in_1'],
-    2: ['winst_materiaal', 'mat_in_1', 'mat_in_2', 'tweevoudige_aanval', 'aftrekschaak'],
-    3: ['mat_in_1', 'mat_in_2', 'tweevoudige_aanval', 'aftrekschaak', 'dubbel_schaak', 'penning', 'promotie'],
-    4: ['mat_in_2', 'tweevoudige_aanval', 'aftrekschaak', 'dubbel_schaak', 'penning', 'rontgen_aanval', 'afleiding', 'promotie', 'tussenspel'],
-    5: ['mat_in_2', 'penning', 'rontgen_aanval', 'afleiding', 'overbelasting', 'zuivering', 'tussenspel', 'schaak_en_win', 'promotie'],
-    6: ['mat_in_2', 'penning', 'rontgen_aanval', 'afleiding', 'overbelasting', 'zuivering', 'tussenspel', 'schaak_en_win', 'promotie'],
-}
 
-# Stappenmethode type -> set of Lichess themes that qualify (ANY match counts)
-TYPE_TO_THEMES = {
-    'winst_materiaal':    {'hangingPiece'},
-    'mat_in_1':           {'mateIn1'},
-    'mat_in_2':           {'mateIn2'},
-    'tweevoudige_aanval': {'fork'},
-    'aftrekschaak':       {'discoveredAttack', 'discoveredCheck'},
-    'dubbel_schaak':      {'doubleCheck'},
-    'penning':            {'pin'},
-    'rontgen_aanval':     {'xRayAttack', 'skewer'},
-    'afleiding':          {'attraction'},   # luring a piece to a bad square
-    'overbelasting':      {'deflection'},   # exploiting an overloaded defender
-    'promotie':           {'promotion', 'underPromotion'},
-    'tussenspel':         {'intermezzo'},
-    'zuivering':          {'capturingDefender', 'clearance'},
-    'schaak_en_win':      {'discoveredCheck'},  # check that wins material
-}
-
-def rating_to_level(r):
-    if r < 1100: return 1
-    if r < 1300: return 2
-    if r < 1500: return 3
-    if r < 1700: return 4
-    if r < 1900: return 5
-    return 6
-
-# Per-(level,type) quality filters on solution length
-def passes(t, level, sol_count):
-    if t == 'mat_in_1':   return sol_count == 1
-    if t == 'mat_in_2':   return sol_count == 3
-    if t == 'winst_materiaal': return sol_count == 1
-    if t == 'tweevoudige_aanval': return sol_count <= 3
-    if t == 'penning':    return sol_count <= 3
-    if t == 'aftrekschaak': return sol_count <= 3
-    if t == 'dubbel_schaak': return sol_count <= 3
-    if t == 'rontgen_aanval': return sol_count <= 3
-    if t == 'afleiding':  return sol_count <= 5
-    if t == 'overbelasting': return sol_count <= 5
-    if t == 'promotie':   return sol_count <= 3
-    if t == 'tussenspel': return sol_count <= 5
-    if t == 'zuivering':  return sol_count <= 5
-    if t == 'schaak_en_win': return sol_count <= 3
-    # default
-    return sol_count <= 5
-
-# ─── FEN / move helpers ────────────────────────────────────────────────────────
-
-FILES = 'abcdefgh'
-
-def sq_idx(name):
-    return (ord(name[0]) - ord('a')) + (int(name[1]) - 1) * 8
-
-def sq_name(idx):
-    return FILES[idx % 8] + str(idx // 8 + 1)
-
-def parse_fen(fen):
-    parts = fen.split()
-    placement, turn, castling, ep = parts[0], parts[1], parts[2], parts[3]
-    board = [None] * 64
-    rank, file = 7, 0
-    for c in placement:
-        if c == '/':
-            rank -= 1
-            file = 0
-        elif c.isdigit():
-            file += int(c)
-        else:
-            color = 'w' if c.isupper() else 'b'
-            board[rank * 8 + file] = color + c.upper()
-            file += 1
-    return board, turn, castling, (None if ep == '-' else sq_idx(ep))
-
-def apply_uci(board, turn, castling, ep, uci):
-    fs = sq_idx(uci[:2])
-    ts = sq_idx(uci[2:4])
-    promo = uci[4].upper() if len(uci) > 4 else None
-    piece = board[fs]
-    if piece is None:
-        raise ValueError(f'no piece on {uci[:2]}')
-    color, ptype = piece[0], piece[1]
-
-    # en passant capture
-    if ptype == 'P' and ep == ts and (fs % 8) != (ts % 8):
-        opp_dir = -8 if color == 'w' else 8
-        board[ts + opp_dir] = None
-
-    # castling rook move
-    if ptype == 'K' and abs((ts % 8) - (fs % 8)) == 2:
-        r = fs // 8
-        if ts % 8 == 6:
-            board[r * 8 + 5] = board[r * 8 + 7]
-            board[r * 8 + 7] = None
-        else:
-            board[r * 8 + 3] = board[r * 8 + 0]
-            board[r * 8 + 0] = None
-
-    board[ts] = piece
-    board[fs] = None
-    if promo:
-        board[ts] = color + promo
-
-    # update castling rights
-    if ptype == 'K':
-        if color == 'w':
-            castling = castling.replace('K', '').replace('Q', '')
-        else:
-            castling = castling.replace('k', '').replace('q', '')
-    for sq in (fs, ts):
-        if sq == 0:  castling = castling.replace('Q', '')
-        if sq == 7:  castling = castling.replace('K', '')
-        if sq == 56: castling = castling.replace('q', '')
-        if sq == 63: castling = castling.replace('k', '')
-    castling = castling or '-'
-
-    new_ep = None
-    if ptype == 'P' and abs(ts - fs) == 16:
-        new_ep = (fs + ts) // 2
-
-    new_turn = 'b' if turn == 'w' else 'w'
-    return board, new_turn, castling, new_ep
-
-# ─── Stream-process the CSV with reservoir sampling per bucket ────────────────
-
-buckets = defaultdict(list)   # (level, type) -> list of row dicts
-counters = defaultdict(int)   # (level, type) -> total candidates seen
-
-valid_keys = {(lvl, t) for lvl, types in LEVEL_THEMES.items() for t in types}
-print(f'Targeting {len(valid_keys)} (level,type) buckets x {PER_BUCKET} = {len(valid_keys)*PER_BUCKET} puzzles', flush=True)
-
-def maybe_add(key, row):
-    counters[key] += 1
-    bucket = buckets[key]
-    if len(bucket) < PER_BUCKET:
-        bucket.append(row)
-    else:
-        j = random.randint(0, counters[key] - 1)
-        if j < PER_BUCKET:
-            bucket[j] = row
-
-with open(INPUT, 'rb') as f:
-    dctx = zstandard.ZstdDecompressor()
-    with dctx.stream_reader(f) as reader:
-        text = io.TextIOWrapper(reader, encoding='utf-8')
-        rdr = csv.DictReader(text)
-        n = 0
-        for row in rdr:
-            n += 1
-            if n % 500000 == 0:
-                full = sum(1 for k in valid_keys if len(buckets[k]) >= PER_BUCKET)
-                print(f'... {n:,} rows, {full}/{len(valid_keys)} buckets at quota', flush=True)
-
-            try:
-                rating = int(row['Rating'])
-            except Exception:
-                continue
-            level = rating_to_level(rating)
-            applicable = LEVEL_THEMES.get(level, [])
-            if not applicable:
-                continue
-
-            themes = set(row['Themes'].split())
-            sol_count = len(row['Moves'].split()) - 1
-            if sol_count < 1:
-                continue
-
-            for t in applicable:
-                want = TYPE_TO_THEMES.get(t)
-                if not want:
-                    continue
-                if not (want & themes):
-                    continue
-                if not passes(t, level, sol_count):
-                    continue
-                maybe_add((level, t), row)
-                break  # one type per puzzle to keep variety
-
-print(f'Total rows scanned: {n:,}', flush=True)
-
-# ─── Convert kept rows to our JSON puzzle objects ──────────────────────────────
-
-def convert(row, level, t):
-    fen = row['FEN']
+def convert(row, skill_ids):
+    import chess
     moves = row['Moves'].split()
-    board, turn, castling, ep = parse_fen(fen)
-    board, turn, castling, ep = apply_uci(board, turn, castling, ep, moves[0])
-    pieces = [{'sq': sq_name(i), 'piece': p} for i, p in enumerate(board) if p]
+    board = chess.Board(row['FEN'])
+    if not board.is_valid() or len(moves) < 2:
+        return None
+    for index, uci in enumerate(moves):
+        move = chess.Move.from_uci(uci)
+        if move not in board.legal_moves:
+            return None
+        board.push(move)
+        if index == 0:
+            initial = board.copy()
+    solution = moves[1:]
+    if len(solution) % 2 != 1:
+        return None
+    themes = row['Themes'].split()
+    if any(t in themes for t in ('mateIn1', 'mateIn2', 'mateIn3')) and not board.is_checkmate():
+        return None
     return {
         'id': 'lichess_' + row['PuzzleId'],
-        'level': level,
-        'type': t,
-        'turn': turn,
-        'pieces': pieces,
-        'solution': moves[1:],
-        'castling': castling,
-        'ep': sq_name(ep) if ep is not None else None,
+        'level': min(int(s[1]) for s in skill_ids),  # proposal for legacy display only
+        'type': 'candidate',
+        'turn': 'w' if initial.turn else 'b',
+        'pieces': [{'sq': chess.square_name(sq), 'piece': ('w' if pc.color else 'b') + pc.symbol().upper()} for sq, pc in sorted(initial.piece_map().items())],
+        'solution': solution,
+        'castling': initial.castling_xfen(),
+        'ep': chess.square_name(initial.ep_square) if initial.ep_square is not None else None,
+        'fen': initial.fen(),
         'rating': int(row['Rating']),
-        'themes': row['Themes'].split(),
+        'themes': themes,
         'url': row.get('GameUrl', ''),
+        'candidateIds': skill_ids,
+        'classification': 'candidate'
     }
 
-import chess  # type: ignore
 
-def pieces_to_fen(pieces, turn, castling, ep):
-    board = [None] * 64
-    for p in pieces:
-        idx = (ord(p['sq'][0]) - ord('a')) + (int(p['sq'][1]) - 1) * 8
-        board[idx] = p['piece']
-    rows = []
-    for r in range(7, -1, -1):
-        row, gap = '', 0
-        for f in range(8):
-            pc = board[r * 8 + f]
-            if pc is None:
-                gap += 1
-            else:
-                if gap:
-                    row += str(gap)
-                    gap = 0
-                row += pc[1] if pc[0] == 'w' else pc[1].lower()
-        if gap:
-            row += str(gap)
-        rows.append(row)
-    return f"{'/'.join(rows)} {turn} {castling} {ep or '-'} 0 1"
-
-def validate(p):
-    """Return True if the puzzle is fully legal & the solution actually mates / wins (for mateIn* puzzles)."""
-    try:
-        fen = pieces_to_fen(p['pieces'], p['turn'], p['castling'], p['ep'])
-        b = chess.Board(fen)
-    except Exception:
-        return False
-    if not b.is_valid():
-        return False
-    for mv in p['solution']:
+def build(args):
+    import zstandard
+    skills = load_curriculum(args.curriculum)
+    rng = random.Random(args.seed)
+    buckets = {s['id']: [] for s in skills}
+    counts = {s['id']: 0 for s in skills}
+    reviews = json.loads(args.reviews.read_text()) if args.reviews else {}
+    if not isinstance(reviews, dict):
+        raise ValueError('Review manifest must map puzzle IDs to curriculum metadata')
+    wanted = set(reviews)
+    reviewed_rows = {}
+    n = 0
+    with args.input.open('rb') as compressed:
+        stream = zstandard.ZstdDecompressor().stream_reader(compressed)
+        with io.TextIOWrapper(stream, encoding='utf-8') as text:
+            for n, row in enumerate(csv.DictReader(text), 1):
+                tags = set(row['Themes'].split())
+                ids = candidates(tags, len(row['Moves'].split()) - 1, skills)
+                puzzle_id = 'lichess_' + row['PuzzleId']
+                if puzzle_id in wanted:
+                    reviewed_rows[puzzle_id] = (row, ids)
+                for skill in ids:
+                    counts[skill] += 1
+                    bucket = buckets[skill]
+                    if len(bucket) < args.per_skill:
+                        bucket.append((row, ids))
+                    else:
+                        index = rng.randrange(counts[skill])
+                        if index < args.per_skill:
+                            bucket[index] = (row, ids)
+                if n % 500000 == 0:
+                    print(f'Scanned {n:,} rows', flush=True)
+                if args.max_rows and n >= args.max_rows:
+                    break
+    unique = dict(reviewed_rows)
+    for bucket in buckets.values():
+        for row, ids in bucket:
+            unique['lichess_' + row['PuzzleId']] = (row, ids)
+    puzzles, dropped, positions = [], 0, set()
+    for puzzle_id, (row, ids) in sorted(unique.items()):
+        meta = reviews.get(puzzle_id)
+        if meta:
+            ids = meta.get('skillIds', [])
+            if not ids or not all(any(s['id'] == k for s in skills) for k in ids):
+                raise ValueError(f'Unknown reviewed skill for {puzzle_id}')
+        if not ids:
+            continue
         try:
-            move = chess.Move.from_uci(mv)
-        except Exception:
-            return False
-        if move not in b.legal_moves:
-            return False
-        b.push(move)
-    # Type-specific endpoint check
-    if p['type'] in ('mat_in_1', 'mat_in_2'):
-        # After the player's last move, position should be checkmate.
-        # Solution alternates player/opp; player moves at even indices (0,2,...).
-        # Last move in solution is always the player's mating move.
-        if not b.is_checkmate():
-            return False
-    return True
-
-all_puzzles = []
-bucket_counts = {}
-dropped = 0
-for key in sorted(valid_keys):
-    rows = buckets[key]
-    converted = []
-    for row in rows:
-        try:
-            p = convert(row, key[0], key[1])
-        except Exception as e:
+            puzzle = convert(row, ids)
+        except (ValueError, KeyError):
+            puzzle = None
+        if not puzzle:
             dropped += 1
             continue
-        # Drop puzzles whose solution requires non-queen promotion (UI auto-queens)
-        if any(len(m) > 4 and m[4].lower() != 'q' for m in p['solution']):
-            dropped += 1
+        position = ' '.join(puzzle['fen'].split()[:4])
+        if position in positions:
             continue
-        if not validate(p):
-            dropped += 1
-            continue
-        converted.append(p)
-    bucket_counts[key] = len(converted)
-    all_puzzles.extend(converted)
+        positions.add(position)
+        if meta:
+            if not all(any(s['id']==skill and (s['ply']==len(puzzle['solution']) or len(meta.get('depthException','').strip())>10) for s in skills) for skill in ids):
+                raise ValueError(f'Unexplained depth exception for {puzzle_id}')
+            if meta.get('reviewed') is not True or not meta.get('reviewSource') or not meta.get('verification'):
+                raise ValueError(f'Incomplete review for {puzzle_id}')
+            puzzle['curriculum'] = meta
+            puzzle['classification'] = 'reviewed'
+        puzzles.append(puzzle)
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    with args.output.open('w', encoding='utf-8') as out:
+        out.write('// Lichess CC0: https://database.lichess.org/#puzzles\n// Candidate labels are not reviewed curriculum assignments.\nwindow.LICHESS_PUZZLES = ')
+        json.dump(puzzles, out, ensure_ascii=False, separators=(',', ':'))
+        out.write(';\n')
+    report = {'rows': n, 'puzzles': len(puzzles), 'dropped': dropped, 'seed': args.seed, 'perSkill': args.per_skill,
+              'source': 'https://database.lichess.org/#puzzles',
+              'candidates': {s['id']: sum(s['id'] in p['candidateIds'] for p in puzzles) for s in skills},
+              'reviewed': sum(p.get('classification') == 'reviewed' for p in puzzles)}
+    args.output.with_suffix('.coverage.json').write_text(json.dumps(report, indent=2) + '\n')
+    print(f'Wrote {len(puzzles):,} legal, distinct candidate positions; {report["reviewed"]} explicitly reviewed', flush=True)
+    missing = [k for k, value in report['candidates'].items() if value < 40]
+    print('Candidate pools below 40:', ', '.join(missing), flush=True)
 
-print(f'Dropped {dropped} puzzles during validation', flush=True)
 
-print('\nPuzzles per bucket:')
-for key in sorted(valid_keys):
-    lvl, t = key
-    print(f'  Stap {lvl} / {t:22s} {bucket_counts[key]:3d}')
-print(f'\nTotal converted: {len(all_puzzles)}')
+def main():
+    root = Path(__file__).resolve().parent
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--input', type=Path, default=root / 'lichess_db_puzzle.csv.zst')
+    parser.add_argument('--output', type=Path, default=root / 'puzzles.js')
+    parser.add_argument('--curriculum', type=Path, default=root / 'curriculum.js')
+    parser.add_argument('--reviews', type=Path)
+    parser.add_argument('--per-skill', type=int, default=150)
+    parser.add_argument('--seed', type=int, default=20261005)
+    parser.add_argument('--max-rows', type=int, default=0, help='0 scans the complete database')
+    args = parser.parse_args()
+    if args.per_skill < 40:
+        parser.error('--per-skill must be >= 40 to leave room for training and independent assessment')
+    build(args)
 
-# Sort for stable output: level, type, id
-all_puzzles.sort(key=lambda p: (p['level'], p['type'], p['id']))
 
-with open(OUTPUT, 'w', encoding='utf-8') as f:
-    f.write('// Auto-generated from the Lichess open puzzle database (CC0).\n')
-    f.write('// Source: https://database.lichess.org/#puzzles\n')
-    f.write('// Each puzzle: { id, level (1-6 Stappenmethode), type, turn, pieces[], solution[], rating, themes[], url }\n')
-    f.write('window.LICHESS_PUZZLES = ')
-    json.dump(all_puzzles, f, ensure_ascii=False, separators=(',', ':'))
-    f.write(';\n')
-
-size_kb = os.path.getsize(OUTPUT) / 1024
-print(f'\nWrote {OUTPUT}  ({size_kb:.1f} KB)')
+if __name__ == '__main__':
+    main()

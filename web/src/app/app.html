@@ -1,0 +1,15 @@
+<div class="shell">
+  <header class="top">
+    <a routerLink="/" class="brand">Schaak Oefeningen</a>
+    <nav aria-label="Hoofdnavigatie">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+        >Dashboard</a
+      >
+      <a routerLink="/oefenen" routerLinkActive="active">Oefenen</a>
+      <a routerLink="/toets" routerLinkActive="active">Toets</a>
+    </nav>
+  </header>
+  <main>
+    <router-outlet />
+  </main>
+</div>

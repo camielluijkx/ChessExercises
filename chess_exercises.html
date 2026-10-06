@@ -461,8 +461,25 @@
     .sq.can-move::after { width: 15px; height: 15px; }
     .sq.can-capture::after { width: 40px; height: 40px; }
   }
+
+  [hidden] { display:none !important; }
+  .muted {font-size:0.78rem;color:var(--text-dim);line-height:1.6;}
+  #adaptiveProgress,#assessmentNotice {font-size:0.8rem;line-height:1.6;}
+  #startAssessment,#startDiagnostic {width:100%;margin-bottom:8px;}
+  .goal-row {padding:10px 0;border-bottom:1px solid var(--border);font-size:0.8rem;line-height:1.5;}
+  .goal-row strong {display:block;}
+  .goal-row button {margin-top:5px;}
+  #assessmentControls {max-width:512px;width:100%;box-sizing:border-box;}
+  #variantInput {width:100%;box-sizing:border-box;margin:8px 0;padding:8px;background:var(--bg);color:var(--text);border:1px solid var(--border);font:inherit;}
+  button:disabled {opacity:0.5;cursor:not-allowed;}
 </style>
 <script src="puzzles.js"></script>
+<script src="vendor/chess.js"></script>
+<script src="curriculum.js"></script>
+<script src="mastery.js"></script>
+<script src="assessment.js"></script>
+<script src="engine-client.js"></script>
+<script src="puzzle-repair.js?v=1"></script>
 </head>
 <body>
 
@@ -484,14 +501,26 @@
   <!-- LEFT SIDEBAR -->
   <div class="sidebar">
     <div class="panel">
+      <div class="panel-title" data-m="tacticalProgress">Tactische voortgang</div>
+      <p id="adaptiveProgress" aria-live="polite"></p>
+      <label class="muted" for="practiceRating" data-m="practiceRating">Moeilijkheidsvoorkeur (optionele puzzelrating)</label>
+      <input id="practiceRating" type="number" min="400" max="4000" step="50" onchange="setPracticeRating(this.value)" style="width:100%;box-sizing:border-box;">
+      <p class="muted" data-m="ratingHelp">Bepaalt alleen moeilijkheid binnen de toegestane leerstof; verleent geen vrijstelling.</p>
+      <p class="muted" data-m="scope">Beheersing van gedekte tactische vaardigheden; geen volledig Stappendiploma.</p>
+      <button class="btn btn-primary" id="startAssessment" onclick="startAssessmentUI()" data-m="startAssessment">Start beheersingstoets</button>
+      <button class="btn btn-secondary" id="startDiagnostic" onclick="startDiagnosticUI()" data-m="startDiagnostic">Start instaptoets</button>
+      <p class="muted" data-m="testRules">Per leerdoel: 20 ongeziene opgaven in twee reeksen van 10, minimaal 24 uur ertussen. Minstens 18 zelfstandig correct. Selecteer een leerdoel en start de toets voor dat onderdeel.</p>
+      <p id="assessmentNotice" aria-live="polite"></p>
+    </div>
+    <div class="panel">
       <div class="panel-title" data-t="level">Niveau</div>
       <div class="level-grid" id="levelGrid"><button class="level-btn active">Stap 1</button><button class="level-btn">Stap 2</button><button class="level-btn">Stap 3</button><button class="level-btn">Stap 4</button><button class="level-btn">Stap 5</button><button class="level-btn">Stap 6</button></div>
     </div>
-    <div class="panel">
-      <div class="panel-title" data-t="puzzleType">Thema</div>
+    <div class="panel" id="themeSelectionPanel">
+      <div class="panel-title" data-t="puzzleType">Leerdoel</div>
       <div class="type-list" id="typeList"><button class="type-btn" data-type="winst_materiaal">Winst materiaal</button><button class="type-btn" data-type="mat_in_1">Mat in 1</button></div>
     </div>
-    <div class="panel">
+    <div class="panel" id="sourcePanel">
       <div class="panel-title" data-t="source">Bron</div>
       <div class="source-toggle">
         <button class="source-btn active" id="srcRandom" onclick="setSource(&#39;random&#39;)" data-t="random">Willekeurig</button>
@@ -514,16 +543,28 @@
       <span class="status-icon">♟</span>
       <span class="status-text" id="statusText" data-t="selectPuzzle">Selecteer een niveau en start een puzzel.</span>
     </div>
+    <div class="panel" id="assessmentControls" hidden>
+      <p id="assessmentCounter" aria-live="polite"></p>
+      <label for="variantInput" data-m="variantLabel">Volledige variant (of voer beide kleuren op het bord in)</label>
+      <textarea id="variantInput" rows="3" placeholder="e2e4 e7e5 g1f3" oninput="saveVariantDraft(this.value)"></textarea>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="submitVariant" onclick="submitVariant()" data-m="submitVariant">Variant indienen</button>
+        <button class="btn btn-secondary" id="undoVariant" onclick="undoVariant()" data-m="undoVariant">Laatste invoer verwijderen</button>
+        <button class="btn btn-secondary" id="skipAssessment" onclick="skipAssessment()" data-m="skipAssessment">Ik weet het niet</button>
+      </div>
+    </div>
     <div class="btn-row" style="max-width:512px;width:100%;">
-      <button class="btn btn-primary" onclick="newPuzzle()" data-t="newPuzzle">Nieuwe Puzzel</button>
-      <button class="btn btn-secondary" onclick="showHint()" data-t="hint">Hint</button>
-      <button class="btn btn-secondary" onclick="resetPuzzle()" data-t="reset">Reset</button>
+      <button class="btn btn-primary" id="nextPractice" onclick="newPuzzle()" data-t="newPuzzle">Nieuwe Puzzel</button>
+      <button class="btn btn-secondary" id="hintButton" onclick="showHint()" data-t="hint">Hint</button>
+      <button class="btn btn-secondary" id="resetButton" onclick="resetPuzzle()" data-t="reset">Reset</button>
+      <button class="btn btn-secondary" id="repairButton" type="button" data-m="repair">Repareren</button>
       <button class="btn btn-secondary" onclick="flipBoard()" title="Draai bord" style="flex:0;padding:10px 12px;">⇅</button>
     </div>
   </div>
 
   <!-- RIGHT PANEL -->
   <div class="right-panel">
+    <div class="panel" id="learningGoalsPanel"><div class="panel-title" data-m="learningGoals">Leerdoelen</div><div id="learningGoals"></div><div id="sessionResults"></div></div>
     <div class="puzzle-info panel" id="puzzleInfoPanel">
       <div class="panel-title" data-t="puzzleInfo">Puzzel Info</div>
       <div class="pi-row"><span data-t="levelLabel">Niveau</span><span id="infoLevel">–</span></div>
@@ -545,9 +586,9 @@
 // ═══════════════════════════════════════════════════════════════
 const T = {
   nl: {
-    level: 'Niveau', puzzleType: 'Thema', source: 'Bron', random: 'Willekeurig', config: 'Configuratie',
+    adaptive: 'Adaptief oefenen', adaptiveHelp: 'Past niveau en thema aan. Kies een stap als startniveau; een gekozen thema blijft gelden. Voortgang wordt in deze browser bewaard.', trainingRating: 'Trainingsrating', completed: 'Afgerond', sessionOnly: 'Opslaan niet beschikbaar: voortgang geldt alleen voor deze sessie.', level: 'Niveau', puzzleType: 'Leerdoel', source: 'Bron', random: 'Willekeurig', config: 'Configuratie',
     uploadHint: '📂 Laad puzzel JSON', selectPuzzle: 'Selecteer een niveau en start een puzzel.',
-    newPuzzle: 'Nieuwe Puzzel', hint: 'Hint', reset: 'Reset',
+    newPuzzle: 'Volgende oefening', hint: 'Hint', reset: 'Reset',
     puzzleInfo: 'Puzzel Info', levelLabel: 'Niveau', typeLabel: 'Thema',
     toMoveLabel: 'Aan zet', movesLabel: 'Zetten', history: 'Zetten',
     white: 'Wit', black: 'Zwart', whiteToPlay: 'Wit aan zet', blackToPlay: 'Zwart aan zet',
@@ -577,9 +618,9 @@ const T = {
     }
   },
   en: {
-    level: 'Level', puzzleType: 'Theme', source: 'Source', random: 'Random', config: 'Config',
+    adaptive: 'Adaptive training', adaptiveHelp: 'Adapts level and theme. Choose a step as your starting level; a selected theme remains active. Progress is saved in this browser.', trainingRating: 'Training rating', completed: 'Completed', sessionOnly: 'Storage unavailable: progress lasts for this session only.', level: 'Level', puzzleType: 'Learning goal', source: 'Source', random: 'Random', config: 'Config',
     uploadHint: '📂 Load puzzle JSON', selectPuzzle: 'Select a level and start a puzzle.',
-    newPuzzle: 'New Puzzle', hint: 'Hint', reset: 'Reset',
+    newPuzzle: 'Next practice puzzle', hint: 'Hint', reset: 'Reset',
     puzzleInfo: 'Puzzle Info', levelLabel: 'Level', typeLabel: 'Theme',
     toMoveLabel: 'To move', movesLabel: 'Moves', history: 'Moves',
     white: 'White', black: 'Black', whiteToPlay: 'White to play', blackToPlay: 'Black to play',
@@ -608,16 +649,6 @@ const T = {
       'schaak_en_win':      'Give check and then win material.'
     }
   }
-};
-
-// Stappenmethode levels → applicable themes
-const LEVEL_THEMES = {
-  1: ['winst_materiaal', 'mat_in_1'],
-  2: ['winst_materiaal', 'mat_in_1', 'mat_in_2', 'tweevoudige_aanval', 'aftrekschaak'],
-  3: ['mat_in_1', 'mat_in_2', 'tweevoudige_aanval', 'aftrekschaak', 'dubbel_schaak', 'penning', 'promotie'],
-  4: ['mat_in_2', 'tweevoudige_aanval', 'aftrekschaak', 'dubbel_schaak', 'penning', 'rontgen_aanval', 'afleiding', 'promotie', 'tussenspel'],
-  5: ['mat_in_2', 'penning', 'rontgen_aanval', 'afleiding', 'overbelasting', 'zuivering', 'tussenspel', 'schaak_en_win', 'promotie'],
-  6: ['mat_in_2', 'penning', 'rontgen_aanval', 'afleiding', 'overbelasting', 'zuivering', 'tussenspel', 'schaak_en_win', 'promotie', 'pat_vermijden']
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -676,255 +707,19 @@ function startPosition() {
   return b;
 }
 
-function copyState(state) {
-  return {
-    board: [...state.board],
-    turn: state.turn,
-    castling: {...state.castling},
-    ep: state.ep,
-    halfmove: state.halfmove,
-    fullmove: state.fullmove
-  };
+function stateFromFen(fen) {
+  const chess = new ChessRules.Chess(fen), fields=chess.fen().split(' ');
+  const board=emptyBoard();
+  chess.board().flat().filter(Boolean).forEach(p => {board[nameToSq(p.square)]=p.color+p.type.toUpperCase();});
+  return {fen:chess.fen(),board,turn:chess.turn(),castling:{wK:fields[2].includes('K'),wQ:fields[2].includes('Q'),bK:fields[2].includes('k'),bQ:fields[2].includes('q')},ep:fields[3]==='-'?null:nameToSq(fields[3]),halfmove:Number(fields[4]),fullmove:Number(fields[5])};
 }
-
-// Returns list of pseudo-legal moves: {from, to, promo, capture, flags}
-// flags: 'ep','castle','promo'
-// attackOnly=true skips castling generation (used by isSquareAttacked to avoid recursion;
-// castling moves never threaten anything that matters for attack tests).
-function pseudoMoves(state, onlyColor, attackOnly) {
-  const b = state.board;
-  const moves = [];
-  const color = onlyColor || state.turn;
-  const opp = color === 'w' ? 'b' : 'w';
-
-  const dirs = {
-    R: [[1,0],[-1,0],[0,1],[0,-1]],
-    B: [[1,1],[1,-1],[-1,1],[-1,-1]],
-    Q: [[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]],
-    K: [[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]],
-    N: [[2,1],[2,-1],[-2,1],[-2,-1],[1,2],[1,-2],[-1,2],[-1,-2]]
-  };
-
-  for(let from=0; from<64; from++) {
-    const p = b[from];
-    if(!p || p[0] !== color) continue;
-    const type = p[1];
-    const fr = fileOf(from), rk = rankOf(from);
-
-    if(type === 'P') {
-      const dir = color === 'w' ? 1 : -1;
-      const startRank = color === 'w' ? 1 : 6;
-      const promRank  = color === 'w' ? 7 : 0;
-      // Forward
-      const fwd = sq(fr, rk+dir);
-      if(rk+dir >= 0 && rk+dir < 8 && !b[fwd]) {
-        if(rankOf(fwd) === promRank) {
-          for(const pp of ['Q','R','B','N']) moves.push({from,to:fwd,promo:pp,flags:'promo'});
-        } else {
-          moves.push({from, to:fwd});
-          // Double push
-          if(rk === startRank) {
-            const dbl = sq(fr, rk+2*dir);
-            if(!b[dbl]) moves.push({from, to:dbl, flags:'dbl'});
-          }
-        }
-      }
-      // Captures
-      for(const df of [-1,1]) {
-        const tf = fr+df, tr = rk+dir;
-        if(tf<0||tf>7||tr<0||tr>7) continue;
-        const to = sq(tf,tr);
-        if(b[to] && b[to][0]===opp) {
-          if(rankOf(to) === promRank) {
-            for(const pp of ['Q','R','B','N']) moves.push({from,to,promo:pp,flags:'promo',capture:b[to]});
-          } else {
-            moves.push({from,to,capture:b[to]});
-          }
-        }
-        // En passant
-        if(state.ep === to) {
-          moves.push({from,to,flags:'ep',capture:opp+'P'});
-        }
-      }
-    } else if(type === 'N' || type === 'K') {
-      for(const [df,dr] of dirs[type]) {
-        const tf=fr+df, tr=rk+dr;
-        if(tf<0||tf>7||tr<0||tr>7) continue;
-        const to = sq(tf,tr);
-        if(!b[to] || b[to][0]===opp) moves.push({from,to,capture:b[to]||null});
-      }
-      // Castling: cannot castle out of, through, or into check.
-      // Skip during attack-only generation to prevent recursion via isSquareAttacked.
-      if(type === 'K' && !attackOnly) {
-        const r = color==='w' ? 0 : 7;
-        const opp2 = color==='w' ? 'b' : 'w';
-        const kingNotInCheck = !isSquareAttacked(state, sq(4,r), opp2);
-        if(kingNotInCheck) {
-          if(color==='w') {
-            if(state.castling.wK && !b[sq(5,0)] && !b[sq(6,0)]
-               && !isSquareAttacked(state, sq(5,0), 'b'))
-              moves.push({from,to:sq(6,0),flags:'castle'});
-            if(state.castling.wQ && !b[sq(3,0)] && !b[sq(2,0)] && !b[sq(1,0)]
-               && !isSquareAttacked(state, sq(3,0), 'b'))
-              moves.push({from,to:sq(2,0),flags:'castle'});
-          } else {
-            if(state.castling.bK && !b[sq(5,7)] && !b[sq(6,7)]
-               && !isSquareAttacked(state, sq(5,7), 'w'))
-              moves.push({from,to:sq(6,7),flags:'castle'});
-            if(state.castling.bQ && !b[sq(3,7)] && !b[sq(2,7)] && !b[sq(1,7)]
-               && !isSquareAttacked(state, sq(3,7), 'w'))
-              moves.push({from,to:sq(2,7),flags:'castle'});
-          }
-        }
-      }
-    } else {
-      // Sliding pieces
-      for(const [df,dr] of dirs[type]) {
-        let tf=fr+df, tr=rk+dr;
-        while(tf>=0&&tf<8&&tr>=0&&tr<8) {
-          const to=sq(tf,tr);
-          if(b[to]) {
-            if(b[to][0]===opp) moves.push({from,to,capture:b[to]});
-            break;
-          }
-          moves.push({from,to});
-          tf+=df; tr+=dr;
-        }
-      }
-    }
-  }
-  return moves;
-}
-
-function isSquareAttacked(state, sqIdx, byColor) {
-  const tmp = copyState(state);
-  tmp.turn = byColor;
-  const moves = pseudoMoves(tmp, byColor, true); // attackOnly: skip castling to avoid recursion
-  return moves.some(m => m.to === sqIdx);
-}
-
-function findKing(board, color) {
-  return board.indexOf(color+'K');
-}
-
-function applyMove(state, move) {
-  const ns = copyState(state);
-  const b = ns.board;
-  const color = state.turn;
-
-  b[move.to] = b[move.from];
-  b[move.from] = null;
-
-  if(move.flags === 'ep') {
-    const dir = color === 'w' ? -1 : 1;
-    b[sq(fileOf(move.to), rankOf(move.to)+dir)] = null;
-  }
-  if(move.flags === 'promo') {
-    b[move.to] = color + move.promo;
-  }
-  if(move.flags === 'castle') {
-    const rank = color==='w' ? 0 : 7;
-    if(fileOf(move.to) === 6) { b[sq(5,rank)] = b[sq(7,rank)]; b[sq(7,rank)]=null; }
-    else                      { b[sq(3,rank)] = b[sq(0,rank)]; b[sq(0,rank)]=null; }
-  }
-
-  // Update castling rights
-  if(b[move.to]==='wK'||move.from===sq(4,0)) { ns.castling.wK=false; ns.castling.wQ=false; }
-  if(b[move.to]==='bK'||move.from===sq(4,7)) { ns.castling.bK=false; ns.castling.bQ=false; }
-  if(move.from===sq(7,0)||move.to===sq(7,0)) ns.castling.wK=false;
-  if(move.from===sq(0,0)||move.to===sq(0,0)) ns.castling.wQ=false;
-  if(move.from===sq(7,7)||move.to===sq(7,7)) ns.castling.bK=false;
-  if(move.from===sq(0,7)||move.to===sq(0,7)) ns.castling.bQ=false;
-
-  // EP square
-  ns.ep = (move.flags==='dbl') ? sq(fileOf(move.to), (rankOf(move.from)+rankOf(move.to))>>1) : null;
-
-  ns.turn = color === 'w' ? 'b' : 'w';
-  ns.halfmove = (b[move.to]?.[1]==='P'||move.capture) ? 0 : ns.halfmove+1;
-  if(color==='b') ns.fullmove++;
-  return ns;
-}
-
-function legalMoves(state) {
-  const color = state.turn;
-  const pseudo = pseudoMoves(state, color);
-  return pseudo.filter(m => {
-    const ns = applyMove(state, m);
-    const kSq = findKing(ns.board, color);
-    return kSq !== -1 && !isSquareAttacked(ns, kSq, ns.turn);
-  });
-}
-
-function isInCheck(state) {
-  const kSq = findKing(state.board, state.turn);
-  return kSq !== -1 && isSquareAttacked(state, kSq, state.turn === 'w' ? 'b' : 'w');
-}
-
-function isCheckmate(state) {
-  return isInCheck(state) && legalMoves(state).length === 0;
-}
-
-function isStalemate(state) {
-  return !isInCheck(state) && legalMoves(state).length === 0;
-}
-
-// Move to algebraic notation
-function moveToAlg(state, move, legal) {
-  const b = state.board;
-  const piece = b[move.from];
-  const type = piece[1];
-  let alg = '';
-  if(move.flags==='castle') { alg = fileOf(move.to)===6 ? 'O-O' : 'O-O-O'; }
-  else {
-    if(type !== 'P') alg += type;
-    // Disambiguate
-    const ambig = legal.filter(m2 => m2 !== move && b[m2.from]===piece && m2.to===move.to);
-    if(ambig.length > 0) {
-      if(ambig.every(m2 => fileOf(m2.from) !== fileOf(move.from))) alg += FILES[fileOf(move.from)];
-      else if(ambig.every(m2 => rankOf(m2.from) !== rankOf(move.from))) alg += (rankOf(move.from)+1);
-      else alg += sqName(move.from);
-    }
-    if(move.capture) {
-      if(type==='P') alg += FILES[fileOf(move.from)];
-      alg += 'x';
-    }
-    alg += sqName(move.to);
-    if(move.promo) alg += '=' + move.promo;
-  }
-  const ns = applyMove(state, move);
-  if(isCheckmate(ns)) alg += '#';
-  else if(isInCheck(ns)) alg += '+';
-  return alg;
-}
-
-// ═══════════════════════════════════════════════════════════════
-// PUZZLE GENERATOR
-// ═══════════════════════════════════════════════════════════════
-
-// Creates puzzle state from FEN-like position spec
-// We use simple position objects: { pieces: [{sq,piece},...], turn, solution, type, level, title }
-
-function stateFromPieces(pieces, turn, castlingStr, epStr) {
-  const b = emptyBoard();
-  for(const {sq: s, piece} of pieces) {
-    const idx = typeof s === 'string' ? nameToSq(s) : s;
-    b[idx] = piece;
-  }
-  const cs = castlingStr || '-';
-  return {
-    board: b,
-    turn,
-    castling: {
-      wK: cs.indexOf('K') >= 0,
-      wQ: cs.indexOf('Q') >= 0,
-      bK: cs.indexOf('k') >= 0,
-      bQ: cs.indexOf('q') >= 0
-    },
-    ep: epStr ? nameToSq(epStr) : null,
-    halfmove: 0,
-    fullmove: 1
-  };
-}
+function stateFromPieces(pieces,turn,castling,ep) {return stateFromFen(TacticalAssessment.fen({pieces,turn,castling,ep}));}
+function legalMoves(state) {return new ChessRules.Chess(state.fen).moves({verbose:true}).map(m => ({from:nameToSq(m.from),to:nameToSq(m.to),promo:m.promotion?.toUpperCase(),capture:Boolean(m.captured),flags:m.flags,san:m.san}));}
+function applyMove(state,move) {const chess=new ChessRules.Chess(state.fen);chess.move({from:sqName(move.from),to:sqName(move.to),promotion:move.promo?.toLowerCase()});return stateFromFen(chess.fen());}
+function isInCheck(state) {return new ChessRules.Chess(state.fen).isCheck();}
+function isCheckmate(state) {return new ChessRules.Chess(state.fen).isCheckmate();}
+function isStalemate(state) {return new ChessRules.Chess(state.fen).isStalemate();}
+function moveToAlg(state,move) {return move.san || sqName(move.from)+sqName(move.to);}
 
 // Built-in sample puzzles — mix of white-to-move and black-to-move
 // Positions are carefully constructed so they are legal and the solution works.
@@ -1138,23 +933,6 @@ function allPuzzles() {
   const lichess = (typeof window !== 'undefined' && window.LICHESS_PUZZLES) || [];
   return lichess.length > 0 ? lichess : BUILTIN_PUZZLES;
 }
-function generatePuzzle(level, type) {
-  const source = allPuzzles();
-  // Exact level+type match first
-  let pool = source.filter(p => p.level === level && p.type === type);
-  // Fall back to level <= selectedLevel + same type
-  if(pool.length === 0) pool = source.filter(p => p.level <= level && p.type === type);
-  // Fall back to just level
-  if(pool.length === 0) pool = source.filter(p => p.level <= level);
-  // Last resort
-  if(pool.length === 0) pool = source;
-  // Avoid repeating same puzzle if possible
-  const noRepeat = pool.filter(p => p.id !== lastPuzzleId);
-  const chosen = (noRepeat.length > 0 ? noRepeat : pool)[Math.floor(Math.random()*(noRepeat.length||pool.length))];
-  lastPuzzleId = chosen.id;
-  return chosen;
-}
-
 // ═══════════════════════════════════════════════════════════════
 // APP STATE
 // ═══════════════════════════════════════════════════════════════
@@ -1170,50 +948,15 @@ let solutionStep = 0;
 let moveHistory = [];
 let legalCache = [];
 let flipped = false;
+let attempt = null;
+let pendingMove = null;
+let interactionLocked = false;
 
 function t(key) { return T[lang][key] || key; }
 
 // ═══════════════════════════════════════════════════════════════
 // UI BUILDING
 // ═══════════════════════════════════════════════════════════════
-
-function buildLevels() {
-  const grid = document.getElementById('levelGrid');
-  grid.innerHTML = '';
-  for(let i=1;i<=6;i++) {
-    const btn = document.createElement('button');
-    btn.className = 'level-btn' + (i===selectedLevel?' active':'');
-    btn.textContent = T[lang].levelNames[i];
-    btn.onclick = () => selectLevel(i);
-    grid.appendChild(btn);
-  }
-}
-
-function buildTypes() {
-  const list = document.getElementById('typeList');
-  list.innerHTML = '';
-  const types = LEVEL_THEMES[selectedLevel] || [];
-  types.forEach(type => {
-    const btn = document.createElement('button');
-    btn.className = 'type-btn' + (type===selectedType?' active':'');
-    btn.setAttribute('data-type', type);
-    btn.onclick = () => selectType(type);
-    const labels = {
-      nl: { winst_materiaal:'Winst materiaal', mat_in_1:'Mat in 1', mat_in_2:'Mat in 2',
-            tweevoudige_aanval:'Tweevoudige aanval', aftrekschaak:'Aftrekschaak', dubbel_schaak:'Dubbel schaak',
-            penning:'Penning', rontgen_aanval:'Röntgenanval', afleiding:'Afleiding',
-            overbelasting:'Overbelasting', pat_vermijden:'Pat vermijden', promotie:'Promotie',
-            tussenspel:'Tussenspel', zuivering:'Zuivering', schaak_en_win:'Schaak en win' },
-      en: { winst_materiaal:'Win material', mat_in_1:'Mate in 1', mat_in_2:'Mate in 2',
-            tweevoudige_aanval:'Fork', aftrekschaak:'Discovered check', dubbel_schaak:'Double check',
-            penning:'Pin', rontgen_aanval:'X-ray attack', afleiding:'Deflection',
-            overbelasting:'Overloading', pat_vermijden:'Avoid stalemate', promotie:'Promotion',
-            tussenspel:'Zwischenzug', zuivering:'Clearance', schaak_en_win:'Check and win' }
-    };
-    btn.textContent = labels[lang][type] || type;
-    list.appendChild(btn);
-  });
-}
 
 function buildBoard() {
   const board = document.getElementById('chessboard');
@@ -1288,7 +1031,7 @@ function renderPieces() {
   });
 
   // Selected + legal moves
-  if(selectedSq !== null) {
+  if(selectedSq !== null && !isAssessment()) {
     document.querySelector(`.sq[data-idx="${selectedSq}"]`)?.classList.add('selected');
     legalCache.forEach(m => {
       if(m.from === selectedSq) {
@@ -1299,47 +1042,10 @@ function renderPieces() {
   }
 }
 
-function updateInfo() {
-  const typeLabels = {
-    nl: { winst_materiaal:'Winst materiaal', mat_in_1:'Mat in 1', mat_in_2:'Mat in 2',
-          tweevoudige_aanval:'Tweevoudige aanval', aftrekschaak:'Aftrekschaak', dubbel_schaak:'Dubbel schaak',
-          penning:'Penning', rontgen_aanval:'Röntgenanval', afleiding:'Afleiding',
-          overbelasting:'Overbelasting', pat_vermijden:'Pat vermijden', promotie:'Promotie',
-          tussenspel:'Tussenspel', zuivering:'Zuivering', schaak_en_win:'Schaak en win' },
-    en: { winst_materiaal:'Win material', mat_in_1:'Mate in 1', mat_in_2:'Mate in 2',
-          tweevoudige_aanval:'Fork', aftrekschaak:'Discovered check', dubbel_schaak:'Double check',
-          penning:'Pin', rontgen_aanval:'X-ray attack', afleiding:'Deflection',
-          overbelasting:'Overloading', pat_vermijden:'Avoid stalemate', promotie:'Promotion',
-          tussenspel:'Zwischenzug', zuivering:'Clearance', schaak_en_win:'Check and win' }
-  };
-  if(currentPuzzle) {
-    document.getElementById('infoLevel').textContent = T[lang].levelNames[currentPuzzle.level] || '–';
-    document.getElementById('infoType').textContent = (typeLabels[lang][currentPuzzle.type]) || currentPuzzle.type || '–';
-    document.getElementById('infoToMove').textContent = currentPuzzle.turn === 'w' ? t('white') : t('black');
-    document.getElementById('infoMoves').textContent = currentPuzzle.solution ? currentPuzzle.solution.length : '–';
-  }
-  const indicator = document.getElementById('toPlayIndicator');
-  if(gameState) {
-    indicator.style.display = 'flex';
-    document.getElementById('toPlayDot').className = 'to-play-dot ' + (gameState.turn==='w'?'white':'black');
-    document.getElementById('toPlayText').textContent = gameState.turn==='w' ? t('whiteToPlay') : t('blackToPlay');
-  } else {
-    indicator.style.display = 'none';
-  }
-  // Theme explainer
-  const exp = document.getElementById('themeExplainer');
-  if(currentPuzzle) {
-    const desc = T[lang].typeDescriptions[currentPuzzle.type] || '';
-    exp.textContent = desc;
-  } else {
-    exp.textContent = '';
-  }
-}
-
 function setStatus(msg, cls='') {
   const bar = document.getElementById('statusBar');
   bar.className = 'status-bar' + (cls?' '+cls:'');
-  document.getElementById('statusText').innerHTML = msg;
+  document.getElementById('statusText').textContent = msg;
 }
 
 function updateMoveHistory() {
@@ -1363,261 +1069,19 @@ function updateMoveHistory() {
 // INTERACTION
 // ═══════════════════════════════════════════════════════════════
 
-function selectLevel(lvl) {
-  selectedLevel = lvl;
-  // If current selectedType not valid for new level, reset
-  if(selectedType && !LEVEL_THEMES[lvl].includes(selectedType)) selectedType = null;
-  buildLevels();
-  buildTypes();
-}
-
-function selectType(type) {
-  selectedType = type;
-  buildTypes();
-  updateInfo();
-}
-
-function flipBoard() {
-  flipped = !flipped;
-  buildBoard();
-  renderPieces();
-}
-
-function setSource(mode) {
-  sourceMode = mode;
-  document.getElementById('srcRandom').className = 'source-btn'+(mode==='random'?' active':'');
-  document.getElementById('srcConfig').className  = 'source-btn'+(mode==='config'?' active':'');
-  document.getElementById('configArea').style.display = mode==='config' ? 'block' : 'none';
-}
-
+function flipBoard() {flipped=!flipped;buildBoard();renderPieces();}
 function setLang(l) {
-  lang = l;
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent.toLowerCase()===l));
-  // Update all data-t elements
-  document.querySelectorAll('[data-t]').forEach(el => {
-    const key = el.getAttribute('data-t');
-    if(T[lang][key]) el.textContent = T[lang][key];
-  });
-  buildLevels();
-  buildTypes();
-  updateInfo();
-  updateMoveHistory();
-}
-
-function newPuzzle() {
-  let puzzle;
-  if(sourceMode === 'config' && configPuzzles.length > 0) {
-    const filtered = configPuzzles.filter(p => p.level<=selectedLevel && (!selectedType||p.type===selectedType));
-    if(filtered.length === 0) { setStatus(t('noPuzzles'),'info'); return; }
-    puzzle = filtered[Math.floor(Math.random()*filtered.length)];
-  } else {
-    const type = selectedType || LEVEL_THEMES[selectedLevel][Math.floor(Math.random()*LEVEL_THEMES[selectedLevel].length)];
-    puzzle = generatePuzzle(selectedLevel, type);
-  }
-  loadPuzzle(puzzle);
-}
-
-function loadPuzzle(puzzle) {
-  currentPuzzle = puzzle;
-  gameState = stateFromPieces(puzzle.pieces, puzzle.turn, puzzle.castling, puzzle.ep);
-  selectedSq = null;
-  solutionStep = 0;
-  moveHistory = [];
-  legalCache = legalMoves(gameState);
-
-  // Auto-flip board if black to play
-  flipped = puzzle.turn === 'b';
-  buildBoard();
-  renderPieces();
-  updateInfo();
-  updateMoveHistory();
-
-  const side = puzzle.turn==='w' ? t('whiteToPlay') : t('blackToPlay');
-  const titlePart = puzzle.title ? `${puzzle.title} — ` : '';
-  setStatus(titlePart + side, 'info');
-}
-
-function resetPuzzle() {
-  if(currentPuzzle) loadPuzzle(currentPuzzle);
-}
-
-function showHint() {
-  if(!currentPuzzle) return;
-  if(currentPuzzle.hint) setStatus('💡 ' + currentPuzzle.hint, 'info');
-  else if(currentPuzzle.solution && solutionStep < currentPuzzle.solution.length) {
-    const move = currentPuzzle.solution[solutionStep];
-    const from = move.substring(0,2);
-    setStatus(t('hintText') + from, 'info');
-  } else setStatus(t('noHint'), 'info');
-}
-
-function onSquareClick(idx) {
-  if(!gameState || !currentPuzzle) return;
-  const b = gameState.board;
-  const color = gameState.turn;
-
-  if(selectedSq === null) {
-    // Select piece
-    if(b[idx] && b[idx][0] === color) {
-      selectedSq = idx;
-      renderPieces();
-    }
-  } else {
-    if(idx === selectedSq) {
-      // Deselect
-      selectedSq = null;
-      renderPieces();
-      return;
-    }
-    // Try to make move
-    const movesFrom = legalCache.filter(m => m.from===selectedSq && m.to===idx);
-    if(movesFrom.length === 0) {
-      // Maybe selecting another own piece
-      if(b[idx] && b[idx][0] === color) {
-        selectedSq = idx;
-        renderPieces();
-      } else {
-        setStatus(t('illegal'), 'wrong');
-        selectedSq = null;
-        renderPieces();
-      }
-      return;
-    }
-
-    // Handle promotion: for simplicity auto-queen
-    let move = movesFrom.find(m => m.promo === 'Q') || movesFrom[0];
-
-    executeMove(move);
-  }
-}
-
-function executeMove(move) {
-  const legal = legalCache;
-  const alg = moveToAlg(gameState, move, legal);
-
-  // Check against solution
-  const solutionMove = currentPuzzle.solution && currentPuzzle.solution[solutionStep];
-  let correct = null;
-  if(solutionMove) {
-    const solFrom = nameToSq(solutionMove.substring(0,2));
-    const solTo   = nameToSq(solutionMove.substring(2,4));
-    const solPromo = solutionMove.length > 4 ? solutionMove[4].toUpperCase() : null;
-    correct = move.from===solFrom && move.to===solTo && (!solPromo || move.promo===solPromo);
-  }
-
-  // Apply move
-  gameState = applyMove(gameState, move);
-  legalCache = legalMoves(gameState);
-  moveHistory.push({from:move.from, to:move.to, alg, correct});
-  selectedSq = null;
-
-  renderPieces();
-  updateInfo();
-  updateMoveHistory();
-
-  if(isCheckmate(gameState)) {
-    setStatus(t('solved'), 'correct');
-    return;
-  }
-  if(isStalemate(gameState)) {
-    setStatus('½–½ Pat / Stalemate', 'info');
-    return;
-  }
-
-  const checkSuffix = isInCheck(gameState) ? t('checkMsg') : '';
-
-  if(solutionMove !== undefined) {
-    if(!correct) {
-      setStatus(t('wrong') + checkSuffix, 'wrong');
-      // Undo after short delay
-      setTimeout(() => { undoMove(); }, 900);
-      return;
-    }
-    solutionStep++;
-    if(solutionStep >= currentPuzzle.solution.length) {
-      setStatus(t('solved'), 'correct');
-      return;
-    }
-    // Play opponent's response if defined
-    playOpponentMove(checkSuffix);
-  } else {
-    setStatus(alg + checkSuffix, '');
-  }
-}
-
-function playOpponentMove(checkSuffix) {
-  // If solution has more moves, play the next one (opponent move)
-  if(!currentPuzzle.solution || solutionStep >= currentPuzzle.solution.length) {
-    setStatus(t('correct'), 'correct');
-    return;
-  }
-  const sol = currentPuzzle.solution[solutionStep];
-  const oppFrom = nameToSq(sol.substring(0,2));
-  const oppTo   = nameToSq(sol.substring(2,4));
-  const oppPromo = sol.length>4 ? sol[4].toUpperCase() : null;
-  const move = legalCache.find(m => m.from===oppFrom && m.to===oppTo && (!oppPromo||m.promo===oppPromo));
-  if(!move) { setStatus(t('correct'), 'correct'); return; }
-  setTimeout(() => {
-    const legal2 = legalCache;
-    const alg = moveToAlg(gameState, move, legal2);
-    gameState = applyMove(gameState, move);
-    legalCache = legalMoves(gameState);
-    moveHistory.push({from:move.from, to:move.to, alg});
-    solutionStep++;
-    selectedSq = null;
-    renderPieces();
-    updateInfo();
-    updateMoveHistory();
-    if(isCheckmate(gameState)) { setStatus(t('solved'), 'correct'); return; }
-    const side = gameState.turn==='w' ? t('whiteToPlay') : t('blackToPlay');
-    setStatus(side + (isInCheck(gameState)?t('checkMsg'):''), 'info');
-  }, 500);
-}
-
-let undoStack = [];
-function undoMove() {
-  if(moveHistory.length === 0) return;
-  // Re-load puzzle and replay all correct moves except last
-  const history = [...moveHistory];
-  history.pop();
-  loadPuzzle(currentPuzzle);
-  // We just reset — the wrong move is gone
-}
-
-function loadPuzzleFile(event) {
-  const file = event.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    try {
-      const data = JSON.parse(e.target.result);
-      configPuzzles = Array.isArray(data) ? data : data.puzzles || [];
-      buildPuzzleList();
-      setStatus(t('puzzleLoaded'), 'info');
-    } catch(err) {
-      setStatus('JSON parse error: ' + err.message, 'wrong');
-    }
-  };
-  reader.readAsText(file);
-}
-
-function buildPuzzleList() {
-  const list = document.getElementById('puzzleList');
-  list.innerHTML = '';
-  configPuzzles.forEach((p, i) => {
-    const item = document.createElement('div');
-    item.className = 'puzzle-item';
-    item.innerHTML = `<div class="pi-title">${p.title||'Puzzle '+(i+1)}</div>
-      <div class="pi-meta">${T[lang].levelNames[p.level]||'Stap '+p.level} · ${p.type||''}</div>`;
-    item.onclick = () => { loadPuzzle(p); document.querySelectorAll('.puzzle-item').forEach(x=>x.classList.remove('active')); item.classList.add('active'); };
-    list.appendChild(item);
-  });
+  lang=l;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.textContent.toLowerCase()===l));
+  document.querySelectorAll('[data-t]').forEach(el=>{const key=el.getAttribute('data-t');if(T[lang][key]) el.textContent=T[lang][key];});
+  updateTraining();buildLevels();buildTypes();updateInfo();updateMoveHistory();
 }
 
 // ═══════════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════════
 function init() {
+  updateTraining();
   buildLevels();
   buildTypes();
   buildBoard();
@@ -1625,8 +1089,8 @@ function init() {
   updateInfo();
 }
 
-init();
 </script>
+<script src="training-ui.js?v=1"></script>
 
 
 </body></html>

@@ -1,0 +1,387 @@
+{
+  "rawPuzzles": 4465,
+  "uniqueSourcePositions": 4465,
+  "eligibleRecords": 456,
+  "skills": [
+    {
+      "id": "s1.capture",
+      "step": 1,
+      "label": "Ongedekt materiaal winnen",
+      "ply": 1,
+      "source": "https://www.stappenmethode.nl/nl/stap1.php",
+      "candidates": 191,
+      "assessmentPositions": 140,
+      "reviewedOutline": true
+    },
+    {
+      "id": "s1.mate",
+      "step": 1,
+      "label": "Mat in één",
+      "ply": 1,
+      "source": "https://www.stappenmethode.nl/nl/stap1.php",
+      "candidates": 188,
+      "assessmentPositions": 187,
+      "reviewedOutline": true
+    },
+    {
+      "id": "s1.defend",
+      "step": 1,
+      "label": "Een stuk verdedigen",
+      "ply": 1,
+      "source": "https://www.stappenmethode.nl/nl/stap1.php",
+      "candidates": 87,
+      "assessmentPositions": 20,
+      "reviewedOutline": true
+    },
+    {
+      "id": "s1.escape",
+      "step": 1,
+      "label": "Schaak opheffen",
+      "ply": 1,
+      "source": "https://www.stappenmethode.nl/nl/stap1.php",
+      "candidates": 62,
+      "assessmentPositions": 62,
+      "reviewedOutline": true
+    },
+    {
+      "id": "s1.exchange",
+      "step": 1,
+      "label": "Voordelig ruilen",
+      "ply": 1,
+      "source": "https://www.stappenmethode.nl/nl/stap1.php",
+      "candidates": 167,
+      "assessmentPositions": 22,
+      "reviewedOutline": true
+    },
+    {
+      "id": "s1.double",
+      "step": 1,
+      "label": "Tweevoudige aanval: basis",
+      "ply": 1,
+      "source": "https://www.stappenmethode.nl/nl/stap1.php",
+      "candidates": 30,
+      "assessmentPositions": 25,
+      "reviewedOutline": true
+    },
+    {
+      "id": "s2.double",
+      "step": 2,
+      "label": "Dubbele aanval",
+      "ply": 3,
+      "source": "https://www.stappenmethode.nl/nl/stap2.php",
+      "candidates": 215,
+      "assessmentPositions": 0,
+      "reviewedOutline": true
+    },
+    {
+      "id": "s2.pin",
+      "step": 2,
+      "label": "Penning",
+      "ply": 3,
+      "source": "https://www.stappenmethode.nl/nl/stap2.php",
+      "candidates": 494,
+      "assessmentPositions": 0,
+      "reviewedOutline": true
+    },
+    {
+      "id": "s2.defender",
+      "step": 2,
+      "label": "Uitschakelen verdediging",
+      "ply": 3,
+      "source": "https://www.stappenmethode.nl/nl/stap2.php",
+      "candidates": 368,
+      "assessmentPositions": 0,
+      "reviewedOutline": true
+    },
+    {
+      "id": "s2.mate",
+      "step": 2,
+      "label": "Mat in twee",
+      "ply": 3,
+      "source": "https://www.stappenmethode.nl/nl/stap2.php",
+      "candidates": 662,
+      "assessmentPositions": 0,
+      "reviewedOutline": true
+    },
+    {
+      "id": "s2.discovered",
+      "step": 2,
+      "label": "Aftrekaanval",
+      "ply": 3,
+      "source": "https://www.stappenmethode.nl/nl/stap2.php",
+      "candidates": 301,
+      "assessmentPositions": 0,
+      "reviewedOutline": true
+    },
+    {
+      "id": "s2.defendmate",
+      "step": 2,
+      "label": "Verdedigen tegen mat",
+      "ply": 3,
+      "source": "https://www.stappenmethode.nl/nl/stap2.php",
+      "candidates": 0,
+      "assessmentPositions": 0,
+      "reviewedOutline": true
+    },
+    {
+      "id": "s2.intermezzo",
+      "step": 2,
+      "label": "Tussenzet",
+      "ply": 3,
+      "source": "https://www.stappenmethode.nl/nl/stap2.php",
+      "candidates": 170,
+      "assessmentPositions": 0,
+      "reviewedOutline": true
+    },
+    {
+      "id": "s3.discoveredcheck",
+      "step": 3,
+      "label": "Aftrekschaak",
+      "ply": 3,
+      "source": "https://www.stappenmethode.nl/lesmateriaal/stap3/handleiding-stap-3",
+      "candidates": 323,
+      "assessmentPositions": 0,
+      "reviewedOutline": true
+    },
+    {
+      "id": "s3.doublecheck",
+      "step": 3,
+      "label": "Dubbelschaak",
+      "ply": 3,
+      "source": "https://www.stappenmethode.nl/lesmateriaal/stap3/handleiding-stap-3",
+      "candidates": 192,
+      "assessmentPositions": 0,
+      "reviewedOutline": true
+    },
+    {
+      "id": "s3.pinned",
+      "step": 3,
+      "label": "Aanval op gepend stuk",
+      "ply": 3,
+      "source": "https://www.stappenmethode.nl/lesmateriaal/stap3/handleiding-stap-3",
+      "candidates": 494,
+      "assessmentPositions": 0,
+      "reviewedOutline": true
+    },
+    {
+      "id": "s3.mateaccess",
+      "step": 3,
+      "label": "Toegang bij mat",
+      "ply": 3,
+      "source": "https://www.stappenmethode.nl/lesmateriaal/stap3/handleiding-stap-3",
+      "candidates": 662,
+      "assessmentPositions": 0,
+      "reviewedOutline": true
+    },
+    {
+      "id": "s3.defender",
+      "step": 3,
+      "label": "Uitschakelen verdediging: verdieping",
+      "ply": 3,
+      "source": "https://www.stappenmethode.nl/lesmateriaal/stap3/handleiding-stap-3",
+      "candidates": 368,
+      "assessmentPositions": 0,
+      "reviewedOutline": true
+    },
+    {
+      "id": "s3.defenddouble",
+      "step": 3,
+      "label": "Verdedigen tegen dubbele aanval",
+      "ply": 3,
+      "source": "https://www.stappenmethode.nl/lesmateriaal/stap3/handleiding-stap-3",
+      "candidates": 0,
+      "assessmentPositions": 0,
+      "reviewedOutline": true
+    },
+    {
+      "id": "s3.defendpin",
+      "step": 3,
+      "label": "Verdedigen tegen penning",
+      "ply": 3,
+      "source": "https://www.stappenmethode.nl/lesmateriaal/stap3/handleiding-stap-3",
+      "candidates": 0,
+      "assessmentPositions": 0,
+      "reviewedOutline": true
+    },
+    {
+      "id": "s3.xray",
+      "step": 3,
+      "label": "Röntgenaanval",
+      "ply": 3,
+      "source": "https://www.stappenmethode.nl/lesmateriaal/stap3/handleiding-stap-3",
+      "candidates": 168,
+      "assessmentPositions": 0,
+      "reviewedOutline": true
+    },
+    {
+      "id": "s3.pinneddefender",
+      "step": 3,
+      "label": "Gepende verdediger",
+      "ply": 3,
+      "source": "https://www.stappenmethode.nl/lesmateriaal/stap3/handleiding-stap-3",
+      "candidates": 494,
+      "assessmentPositions": 0,
+      "reviewedOutline": true
+    },
+    {
+      "id": "s4.interference",
+      "step": 4,
+      "label": "Onderbreken",
+      "ply": 5,
+      "source": "https://www.stappenmethode.nl/nl/stap4.php",
+      "candidates": 156,
+      "assessmentPositions": 0,
+      "reviewedOutline": true
+    },
+    {
+      "id": "s4.attraction",
+      "step": 4,
+      "label": "Lokken",
+      "ply": 5,
+      "source": "https://www.stappenmethode.nl/nl/stap4.php",
+      "candidates": 578,
+      "assessmentPositions": 0,
+      "reviewedOutline": true
+    },
+    {
+      "id": "s4.blocking",
+      "step": 4,
+      "label": "Blokkeren",
+      "ply": 5,
+      "source": "https://www.stappenmethode.nl/nl/stap4.php",
+      "candidates": 0,
+      "assessmentPositions": 0,
+      "reviewedOutline": true
+    },
+    {
+      "id": "s4.pinattraction",
+      "step": 4,
+      "label": "Penning met lokken",
+      "ply": 5,
+      "source": "https://www.stappenmethode.nl/nl/stap4.php",
+      "candidates": 201,
+      "assessmentPositions": 0,
+      "reviewedOutline": true
+    },
+    {
+      "id": "s4.defender",
+      "step": 4,
+      "label": "Uitschakelen verdediging: voorbereiding",
+      "ply": 5,
+      "source": "https://www.stappenmethode.nl/nl/stap4.php",
+      "candidates": 301,
+      "assessmentPositions": 0,
+      "reviewedOutline": true
+    },
+    {
+      "id": "s4.magnet",
+      "step": 4,
+      "label": "Magneet",
+      "ply": 5,
+      "source": "https://www.stappenmethode.nl/nl/stap4.php",
+      "candidates": 250,
+      "assessmentPositions": 0,
+      "reviewedOutline": true
+    },
+    {
+      "id": "s4.chase",
+      "step": 4,
+      "label": "Jagen en richten",
+      "ply": 5,
+      "source": "https://www.stappenmethode.nl/nl/stap4.php",
+      "candidates": 0,
+      "assessmentPositions": 0,
+      "reviewedOutline": true
+    },
+    {
+      "id": "s4.kingattack",
+      "step": 4,
+      "label": "Koningsaanval",
+      "ply": 5,
+      "source": "https://www.stappenmethode.nl/nl/stap4.php",
+      "candidates": 639,
+      "assessmentPositions": 0,
+      "reviewedOutline": true
+    },
+    {
+      "id": "s4.clearance",
+      "step": 4,
+      "label": "Ruimen",
+      "ply": 5,
+      "source": "https://www.stappenmethode.nl/nl/stap4.php",
+      "candidates": 208,
+      "assessmentPositions": 0,
+      "reviewedOutline": true
+    },
+    {
+      "id": "s5.mate",
+      "step": 5,
+      "label": "Mat: verdieping",
+      "ply": 5,
+      "source": "https://www.stappenmethode.nl/lesmateriaal/stap5/handleiding-stap-5",
+      "candidates": 418,
+      "assessmentPositions": 0,
+      "reviewedOutline": false
+    },
+    {
+      "id": "s5.breakthrough",
+      "step": 5,
+      "label": "Doorbraak",
+      "ply": 5,
+      "source": "https://www.stappenmethode.nl/lesmateriaal/stap5/handleiding-stap-5",
+      "candidates": 243,
+      "assessmentPositions": 0,
+      "reviewedOutline": false
+    },
+    {
+      "id": "s5.discovered",
+      "step": 5,
+      "label": "Aftrekaanval: verdieping",
+      "ply": 5,
+      "source": "https://www.stappenmethode.nl/lesmateriaal/stap5/handleiding-stap-5",
+      "candidates": 275,
+      "assessmentPositions": 0,
+      "reviewedOutline": false
+    },
+    {
+      "id": "s5.pin",
+      "step": 5,
+      "label": "Penning: verdieping",
+      "ply": 5,
+      "source": "https://www.stappenmethode.nl/lesmateriaal/stap5/handleiding-stap-5",
+      "candidates": 427,
+      "assessmentPositions": 0,
+      "reviewedOutline": false
+    },
+    {
+      "id": "s5.defend",
+      "step": 5,
+      "label": "Verdedigen: verdieping",
+      "ply": 5,
+      "source": "https://www.stappenmethode.nl/lesmateriaal/stap5/handleiding-stap-5",
+      "candidates": 211,
+      "assessmentPositions": 0,
+      "reviewedOutline": false
+    },
+    {
+      "id": "s5.kingattack",
+      "step": 5,
+      "label": "Koningsaanval: verdieping",
+      "ply": 5,
+      "source": "https://www.stappenmethode.nl/lesmateriaal/stap5/handleiding-stap-5",
+      "candidates": 639,
+      "assessmentPositions": 0,
+      "reviewedOutline": false
+    },
+    {
+      "id": "s6.combination",
+      "step": 6,
+      "label": "Diepere tactische combinaties",
+      "ply": 7,
+      "source": "https://www.stappenmethode.nl/lesmateriaal/stap6",
+      "candidates": 0,
+      "assessmentPositions": 0,
+      "reviewedOutline": false
+    }
+  ]
+}

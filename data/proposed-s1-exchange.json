@@ -1,0 +1,717 @@
+[
+  {
+    "id": "lichess_se0G6",
+    "fen": "r1bq1rk1/ppp2ppB/2n1pb2/3p4/3P3P/4PN2/PPPN1PP1/R2QK2R b KQ - 0 10",
+    "solution": [
+      "g8h7"
+    ],
+    "rating": 623,
+    "themes": [
+      "equality",
+      "hangingPiece",
+      "oneMove",
+      "opening"
+    ],
+    "url": "https://lichess.org/rJZCS71M#19",
+    "proposed": {
+      "reviewed": true,
+      "reviewSource": "Voorstel: Lichess-kandidaat voor s1.exchange — pedagogische check vereist",
+      "skillIds": [
+        "s1.exchange"
+      ],
+      "verification": {
+        "kind": "engine",
+        "objective": {
+          "kind": "material",
+          "gain": 1
+        }
+      }
+    }
+  },
+  {
+    "id": "lichess_mUXZQ",
+    "fen": "1r4k1/1Q2nppp/4p3/p1ppP3/8/5N1P/PN3PP1/1R4K1 b - - 0 27",
+    "solution": [
+      "b8b7"
+    ],
+    "rating": 769,
+    "themes": [
+      "endgame",
+      "equality",
+      "oneMove"
+    ],
+    "url": "https://lichess.org/jkXWWTJ6#53",
+    "proposed": {
+      "reviewed": true,
+      "reviewSource": "Voorstel: Lichess-kandidaat voor s1.exchange — pedagogische check vereist",
+      "skillIds": [
+        "s1.exchange"
+      ],
+      "verification": {
+        "kind": "engine",
+        "objective": {
+          "kind": "material",
+          "gain": 1
+        }
+      }
+    }
+  },
+  {
+    "id": "lichess_k6mqE",
+    "fen": "8/1pb1B3/5n2/p2p4/3P4/PPK1Pk2/8/8 w - - 0 42",
+    "solution": [
+      "e7f6"
+    ],
+    "rating": 774,
+    "themes": [
+      "endgame",
+      "equality",
+      "hangingPiece",
+      "oneMove"
+    ],
+    "url": "https://lichess.org/a6hKHKzo/black#82",
+    "proposed": {
+      "reviewed": true,
+      "reviewSource": "Voorstel: Lichess-kandidaat voor s1.exchange — pedagogische check vereist",
+      "skillIds": [
+        "s1.exchange"
+      ],
+      "verification": {
+        "kind": "engine",
+        "objective": {
+          "kind": "material",
+          "gain": 1
+        }
+      }
+    }
+  },
+  {
+    "id": "lichess_nRrvK",
+    "fen": "8/5p2/p1pk2pp/1p6/1KbP1P2/6PP/1P6/5B2 w - - 5 42",
+    "solution": [
+      "f1c4"
+    ],
+    "rating": 806,
+    "themes": [
+      "bishopEndgame",
+      "endgame",
+      "equality",
+      "oneMove"
+    ],
+    "url": "https://lichess.org/JPRcddhg/black#82",
+    "proposed": {
+      "reviewed": true,
+      "reviewSource": "Voorstel: Lichess-kandidaat voor s1.exchange — pedagogische check vereist",
+      "skillIds": [
+        "s1.exchange"
+      ],
+      "verification": {
+        "kind": "engine",
+        "objective": {
+          "kind": "material",
+          "gain": 1
+        }
+      }
+    }
+  },
+  {
+    "id": "lichess_Tdn5D",
+    "fen": "r6r/pp1k1p2/3pb3/4n3/5p2/2PP1Q2/PP2KPPq/R3R3 w - - 4 21",
+    "solution": [
+      "f3b7"
+    ],
+    "rating": 887,
+    "themes": [
+      "equality",
+      "middlegame",
+      "oneMove"
+    ],
+    "url": "https://lichess.org/7Fpi5VS9/black#40",
+    "proposed": {
+      "reviewed": true,
+      "reviewSource": "Voorstel: Lichess-kandidaat voor s1.exchange — pedagogische check vereist",
+      "skillIds": [
+        "s1.exchange"
+      ],
+      "verification": {
+        "kind": "engine",
+        "objective": {
+          "kind": "material",
+          "gain": 1
+        }
+      }
+    }
+  },
+  {
+    "id": "lichess_HXv3L",
+    "fen": "r4rk1/1p3p2/2p3p1/1p1n1N2/5Q2/3R3P/PP3PP1/R5K1 b - - 0 27",
+    "solution": [
+      "d5f4"
+    ],
+    "rating": 913,
+    "themes": [
+      "equality",
+      "middlegame",
+      "oneMove"
+    ],
+    "url": "https://lichess.org/4PWLWcpS#53",
+    "proposed": {
+      "reviewed": true,
+      "reviewSource": "Voorstel: Lichess-kandidaat voor s1.exchange — pedagogische check vereist",
+      "skillIds": [
+        "s1.exchange"
+      ],
+      "verification": {
+        "kind": "engine",
+        "objective": {
+          "kind": "material",
+          "gain": 1
+        }
+      }
+    }
+  },
+  {
+    "id": "lichess_Epp4v",
+    "fen": "5r1k/p5r1/1p6/7Q/8/2PPP1PK/PP5P/8 b - - 7 40",
+    "solution": [
+      "g7h7"
+    ],
+    "rating": 934,
+    "themes": [
+      "endgame",
+      "equality",
+      "oneMove",
+      "pin",
+      "queenRookEndgame"
+    ],
+    "url": "https://lichess.org/cBWq3PPf#79",
+    "proposed": {
+      "reviewed": true,
+      "reviewSource": "Voorstel: Lichess-kandidaat voor s1.exchange — pedagogische check vereist",
+      "skillIds": [
+        "s1.exchange"
+      ],
+      "verification": {
+        "kind": "engine",
+        "objective": {
+          "kind": "material",
+          "gain": 1
+        }
+      }
+    }
+  },
+  {
+    "id": "lichess_jsArC",
+    "fen": "4rr2/ppp2ppk/2nb4/3p2B1/3P3n/2P5/PP3PPP/RN1R2K1 w - - 1 16",
+    "solution": [
+      "g5h4"
+    ],
+    "rating": 935,
+    "themes": [
+      "equality",
+      "hangingPiece",
+      "middlegame",
+      "oneMove"
+    ],
+    "url": "https://lichess.org/vOtDo45d/black#30",
+    "proposed": {
+      "reviewed": true,
+      "reviewSource": "Voorstel: Lichess-kandidaat voor s1.exchange — pedagogische check vereist",
+      "skillIds": [
+        "s1.exchange"
+      ],
+      "verification": {
+        "kind": "engine",
+        "objective": {
+          "kind": "material",
+          "gain": 1
+        }
+      }
+    }
+  },
+  {
+    "id": "lichess_7Pilh",
+    "fen": "8/8/p7/6k1/6P1/4r1K1/1R2b3/8 w - - 4 67",
+    "solution": [
+      "g3f2"
+    ],
+    "rating": 939,
+    "themes": [
+      "defensiveMove",
+      "endgame",
+      "equality",
+      "oneMove"
+    ],
+    "url": "https://lichess.org/vS5mXjjB/black#132",
+    "proposed": {
+      "reviewed": true,
+      "reviewSource": "Voorstel: Lichess-kandidaat voor s1.exchange — pedagogische check vereist",
+      "skillIds": [
+        "s1.exchange"
+      ],
+      "verification": {
+        "kind": "engine",
+        "objective": {
+          "kind": "material",
+          "gain": 1
+        }
+      }
+    }
+  },
+  {
+    "id": "lichess_6k1y3",
+    "fen": "r1bqkbnr/pppp1ppp/8/8/4PPn1/8/PPPP2PP/RNBQKB1R w KQkq - 1 5",
+    "solution": [
+      "d1g4"
+    ],
+    "rating": 958,
+    "themes": [
+      "equality",
+      "hangingPiece",
+      "oneMove",
+      "opening"
+    ],
+    "url": "https://lichess.org/SoQGbEhA/black#8",
+    "proposed": {
+      "reviewed": true,
+      "reviewSource": "Voorstel: Lichess-kandidaat voor s1.exchange — pedagogische check vereist",
+      "skillIds": [
+        "s1.exchange"
+      ],
+      "verification": {
+        "kind": "engine",
+        "objective": {
+          "kind": "material",
+          "gain": 1
+        }
+      }
+    }
+  },
+  {
+    "id": "lichess_aE6ic",
+    "fen": "8/6k1/5R2/6K1/6PP/8/8/6r1 b - - 0 47",
+    "solution": [
+      "g1g4"
+    ],
+    "rating": 976,
+    "themes": [
+      "endgame",
+      "equality",
+      "oneMove",
+      "rookEndgame"
+    ],
+    "url": "https://lichess.org/4Jk998xM#93",
+    "proposed": {
+      "reviewed": true,
+      "reviewSource": "Voorstel: Lichess-kandidaat voor s1.exchange — pedagogische check vereist",
+      "skillIds": [
+        "s1.exchange"
+      ],
+      "verification": {
+        "kind": "engine",
+        "objective": {
+          "kind": "material",
+          "gain": 1
+        }
+      }
+    }
+  },
+  {
+    "id": "lichess_iNRgl",
+    "fen": "8/5p1k/4r1p1/7p/4rQ1P/8/6PK/8 w - - 16 50",
+    "solution": [
+      "f4f7"
+    ],
+    "rating": 981,
+    "themes": [
+      "endgame",
+      "equality",
+      "oneMove",
+      "queenRookEndgame"
+    ],
+    "url": "https://lichess.org/BVMx0P1S/black#98",
+    "proposed": {
+      "reviewed": true,
+      "reviewSource": "Voorstel: Lichess-kandidaat voor s1.exchange — pedagogische check vereist",
+      "skillIds": [
+        "s1.exchange"
+      ],
+      "verification": {
+        "kind": "engine",
+        "objective": {
+          "kind": "material",
+          "gain": 1
+        }
+      }
+    }
+  },
+  {
+    "id": "lichess_TrYkd",
+    "fen": "1n2kb1r/pp4pp/5pn1/4p3/3qP3/5Q1P/5PPK/R1R5 w k - 4 25",
+    "solution": [
+      "c1c8"
+    ],
+    "rating": 998,
+    "themes": [
+      "equality",
+      "middlegame",
+      "oneMove"
+    ],
+    "url": "https://lichess.org/GC2EdCp9/black#48",
+    "proposed": {
+      "reviewed": true,
+      "reviewSource": "Voorstel: Lichess-kandidaat voor s1.exchange — pedagogische check vereist",
+      "skillIds": [
+        "s1.exchange"
+      ],
+      "verification": {
+        "kind": "engine",
+        "objective": {
+          "kind": "material",
+          "gain": 1
+        }
+      }
+    }
+  },
+  {
+    "id": "lichess_HGTcm",
+    "fen": "2r4k/1p2qr2/p2pp3/6pp/2PP1pPR/PP5P/5QK1/4R3 w - - 0 34",
+    "solution": [
+      "h4h5"
+    ],
+    "rating": 1006,
+    "themes": [
+      "endgame",
+      "equality",
+      "kingsideAttack",
+      "oneMove"
+    ],
+    "url": "https://lichess.org/BsNEWewF/black#66",
+    "proposed": {
+      "reviewed": true,
+      "reviewSource": "Voorstel: Lichess-kandidaat voor s1.exchange — pedagogische check vereist",
+      "skillIds": [
+        "s1.exchange"
+      ],
+      "verification": {
+        "kind": "engine",
+        "objective": {
+          "kind": "material",
+          "gain": 1
+        }
+      }
+    }
+  },
+  {
+    "id": "lichess_Ev0UR",
+    "fen": "4r1k1/p1Q2ppp/1p1p4/3P4/8/5K1P/PPr5/5b2 w - - 0 26",
+    "solution": [
+      "c7c2"
+    ],
+    "rating": 1016,
+    "themes": [
+      "endgame",
+      "equality",
+      "hangingPiece",
+      "oneMove"
+    ],
+    "url": "https://lichess.org/QMxOyxrl/black#50",
+    "proposed": {
+      "reviewed": true,
+      "reviewSource": "Voorstel: Lichess-kandidaat voor s1.exchange — pedagogische check vereist",
+      "skillIds": [
+        "s1.exchange"
+      ],
+      "verification": {
+        "kind": "engine",
+        "objective": {
+          "kind": "material",
+          "gain": 1
+        }
+      }
+    }
+  },
+  {
+    "id": "lichess_pGVNB",
+    "fen": "2k1rr2/ppp4p/4Npn1/3p1n2/P5b1/1PP5/3N1PPP/R3R1K1 w - - 5 24",
+    "solution": [
+      "e6f8"
+    ],
+    "rating": 1016,
+    "themes": [
+      "equality",
+      "middlegame",
+      "oneMove"
+    ],
+    "url": "https://lichess.org/lFJkdwKn/black#46",
+    "proposed": {
+      "reviewed": true,
+      "reviewSource": "Voorstel: Lichess-kandidaat voor s1.exchange — pedagogische check vereist",
+      "skillIds": [
+        "s1.exchange"
+      ],
+      "verification": {
+        "kind": "engine",
+        "objective": {
+          "kind": "material",
+          "gain": 1
+        }
+      }
+    }
+  },
+  {
+    "id": "lichess_XHo2j",
+    "fen": "5rk1/p4ppp/2q1p3/2BnP3/2N5/1P6/5PPP/2QR2K1 b - - 0 25",
+    "solution": [
+      "c6c5"
+    ],
+    "rating": 1019,
+    "themes": [
+      "equality",
+      "middlegame",
+      "oneMove"
+    ],
+    "url": "https://lichess.org/ly3qQESf#49",
+    "proposed": {
+      "reviewed": true,
+      "reviewSource": "Voorstel: Lichess-kandidaat voor s1.exchange — pedagogische check vereist",
+      "skillIds": [
+        "s1.exchange"
+      ],
+      "verification": {
+        "kind": "engine",
+        "objective": {
+          "kind": "material",
+          "gain": 1
+        }
+      }
+    }
+  },
+  {
+    "id": "lichess_jnkQ2",
+    "fen": "1k1r2r1/1pp5/p4p1p/1P1p2p1/2P3B1/R5PP/Rb4PK/1N6 b - - 1 27",
+    "solution": [
+      "b2a3"
+    ],
+    "rating": 1035,
+    "themes": [
+      "equality",
+      "middlegame",
+      "oneMove"
+    ],
+    "url": "https://lichess.org/z5Djw8xe#53",
+    "proposed": {
+      "reviewed": true,
+      "reviewSource": "Voorstel: Lichess-kandidaat voor s1.exchange — pedagogische check vereist",
+      "skillIds": [
+        "s1.exchange"
+      ],
+      "verification": {
+        "kind": "engine",
+        "objective": {
+          "kind": "material",
+          "gain": 1
+        }
+      }
+    }
+  },
+  {
+    "id": "lichess_Re6ok",
+    "fen": "r2qkb1r/pppb1ppR/2n1p3/3p4/3P4/2PBPNP1/PP1N1PP1/R2QK3 b Qkq - 0 11",
+    "solution": [
+      "h8h7"
+    ],
+    "rating": 1039,
+    "themes": [
+      "equality",
+      "middlegame",
+      "oneMove"
+    ],
+    "url": "https://lichess.org/TC2omylQ#21",
+    "proposed": {
+      "reviewed": true,
+      "reviewSource": "Voorstel: Lichess-kandidaat voor s1.exchange — pedagogische check vereist",
+      "skillIds": [
+        "s1.exchange"
+      ],
+      "verification": {
+        "kind": "engine",
+        "objective": {
+          "kind": "material",
+          "gain": 1
+        }
+      }
+    }
+  },
+  {
+    "id": "lichess_rN2IO",
+    "fen": "r2qn1k1/p2nb1pp/Q3p3/3pP3/2p2r2/2N2N2/PPP2PPP/R4RK1 w - - 0 15",
+    "solution": [
+      "a6e6"
+    ],
+    "rating": 1057,
+    "themes": [
+      "equality",
+      "kingsideAttack",
+      "middlegame",
+      "oneMove"
+    ],
+    "url": "https://lichess.org/Py0MFgL4/black#28",
+    "proposed": {
+      "reviewed": true,
+      "reviewSource": "Voorstel: Lichess-kandidaat voor s1.exchange — pedagogische check vereist",
+      "skillIds": [
+        "s1.exchange"
+      ],
+      "verification": {
+        "kind": "engine",
+        "objective": {
+          "kind": "material",
+          "gain": 1
+        }
+      }
+    }
+  },
+  {
+    "id": "lichess_fpNSE",
+    "fen": "r2qkb2/1ppb1p2/p2p3p/6Bn/3PP3/2N4P/PPP2PP1/R2QR1K1 b q - 0 16",
+    "solution": [
+      "d8g5"
+    ],
+    "rating": 1066,
+    "themes": [
+      "equality",
+      "middlegame",
+      "oneMove"
+    ],
+    "url": "https://lichess.org/ilwo2ahC#31",
+    "proposed": {
+      "reviewed": true,
+      "reviewSource": "Voorstel: Lichess-kandidaat voor s1.exchange — pedagogische check vereist",
+      "skillIds": [
+        "s1.exchange"
+      ],
+      "verification": {
+        "kind": "engine",
+        "objective": {
+          "kind": "material",
+          "gain": 1
+        }
+      }
+    }
+  },
+  {
+    "id": "lichess_mCKRA",
+    "fen": "8/2p2kp1/7p/8/p1n1PPPP/3K4/8/8 w - - 0 41",
+    "solution": [
+      "d3c4"
+    ],
+    "rating": 1066,
+    "themes": [
+      "endgame",
+      "equality",
+      "hangingPiece",
+      "oneMove"
+    ],
+    "url": "https://lichess.org/1Q2vOHmz/black#80",
+    "proposed": {
+      "reviewed": true,
+      "reviewSource": "Voorstel: Lichess-kandidaat voor s1.exchange — pedagogische check vereist",
+      "skillIds": [
+        "s1.exchange"
+      ],
+      "verification": {
+        "kind": "engine",
+        "objective": {
+          "kind": "material",
+          "gain": 1
+        }
+      }
+    }
+  },
+  {
+    "id": "lichess_y55Xu",
+    "fen": "r7/pp3kp1/1Qn1b2p/8/4RP2/7P/PPP3P1/R5K1 b - - 0 21",
+    "solution": [
+      "a7b6"
+    ],
+    "rating": 1069,
+    "themes": [
+      "endgame",
+      "equality",
+      "oneMove"
+    ],
+    "url": "https://lichess.org/0yNhpaGL#41",
+    "proposed": {
+      "reviewed": true,
+      "reviewSource": "Voorstel: Lichess-kandidaat voor s1.exchange — pedagogische check vereist",
+      "skillIds": [
+        "s1.exchange"
+      ],
+      "verification": {
+        "kind": "engine",
+        "objective": {
+          "kind": "material",
+          "gain": 1
+        }
+      }
+    }
+  },
+  {
+    "id": "lichess_9z9Fj",
+    "fen": "r1b2k1r/pp1pppNp/2n2npB/8/4P3/2N2P2/PqP3PP/R2QKB1R b KQ - 2 10",
+    "solution": [
+      "b2c3"
+    ],
+    "rating": 1085,
+    "themes": [
+      "equality",
+      "hangingPiece",
+      "oneMove",
+      "opening"
+    ],
+    "url": "https://lichess.org/pQHHuq94#19",
+    "proposed": {
+      "reviewed": true,
+      "reviewSource": "Voorstel: Lichess-kandidaat voor s1.exchange — pedagogische check vereist",
+      "skillIds": [
+        "s1.exchange"
+      ],
+      "verification": {
+        "kind": "engine",
+        "objective": {
+          "kind": "material",
+          "gain": 1
+        }
+      }
+    }
+  },
+  {
+    "id": "lichess_KrC2H",
+    "fen": "2b2rk1/4Nr2/p4q1p/1p1pR1p1/3P4/1PPQ3P/2B2P2/R5K1 b - - 4 30",
+    "solution": [
+      "f7e7"
+    ],
+    "rating": 1091,
+    "themes": [
+      "equality",
+      "middlegame",
+      "oneMove"
+    ],
+    "url": "https://lichess.org/6HcEkGDn#59",
+    "proposed": {
+      "reviewed": true,
+      "reviewSource": "Voorstel: Lichess-kandidaat voor s1.exchange — pedagogische check vereist",
+      "skillIds": [
+        "s1.exchange"
+      ],
+      "verification": {
+        "kind": "engine",
+        "objective": {
+          "kind": "material",
+          "gain": 1
+        }
+      }
+    }
+  }
+]

@@ -1,0 +1,1427 @@
+[
+  {
+    "id": "hand_s1double_0",
+    "turn": "w",
+    "pieces": [
+      {
+        "sq": "f7",
+        "piece": "bK"
+      },
+      {
+        "sq": "d3",
+        "piece": "wN"
+      },
+      {
+        "sq": "f3",
+        "piece": "bQ"
+      },
+      {
+        "sq": "a1",
+        "piece": "wK"
+      }
+    ],
+    "castling": "-",
+    "ep": null,
+    "solution": [
+      "d3e5"
+    ],
+    "themes": [
+      "fork",
+      "oneMove"
+    ],
+    "fen": "8/5k2/8/8/8/3N1q2/8/K7 w - - 0 1",
+    "url": "",
+    "rating": 600,
+    "level": 1,
+    "type": "candidate",
+    "candidateIds": [
+      "s1.double"
+    ],
+    "classification": "proposed-review",
+    "note": "Ridervork koning+q",
+    "curriculum": {
+      "reviewed": true,
+      "reviewSource": "Handmatig: elementaire ridervork (koning + q) voor s1.double",
+      "skillIds": [
+        "s1.double"
+      ],
+      "verification": {
+        "kind": "tree",
+        "defenceReviewed": true,
+        "lines": [
+          [
+            "d3e5"
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "hand_s1double_1",
+    "turn": "w",
+    "pieces": [
+      {
+        "sq": "h8",
+        "piece": "wK"
+      },
+      {
+        "sq": "f7",
+        "piece": "bK"
+      },
+      {
+        "sq": "d3",
+        "piece": "wN"
+      },
+      {
+        "sq": "f3",
+        "piece": "bQ"
+      }
+    ],
+    "castling": "-",
+    "ep": null,
+    "solution": [
+      "d3e5"
+    ],
+    "themes": [
+      "fork",
+      "oneMove"
+    ],
+    "fen": "7K/5k2/8/8/8/3N1q2/8/8 w - - 0 1",
+    "url": "",
+    "rating": 600,
+    "level": 1,
+    "type": "candidate",
+    "candidateIds": [
+      "s1.double"
+    ],
+    "classification": "proposed-review",
+    "note": "Ridervork koning+q",
+    "curriculum": {
+      "reviewed": true,
+      "reviewSource": "Handmatig: elementaire ridervork (koning + q) voor s1.double",
+      "skillIds": [
+        "s1.double"
+      ],
+      "verification": {
+        "kind": "tree",
+        "defenceReviewed": true,
+        "lines": [
+          [
+            "d3e5"
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "hand_s1double_2",
+    "turn": "w",
+    "pieces": [
+      {
+        "sq": "d7",
+        "piece": "wN"
+      },
+      {
+        "sq": "f7",
+        "piece": "bK"
+      },
+      {
+        "sq": "f3",
+        "piece": "bQ"
+      },
+      {
+        "sq": "a1",
+        "piece": "wK"
+      }
+    ],
+    "castling": "-",
+    "ep": null,
+    "solution": [
+      "d7e5"
+    ],
+    "themes": [
+      "fork",
+      "oneMove"
+    ],
+    "fen": "8/3N1k2/8/8/8/5q2/8/K7 w - - 0 1",
+    "url": "",
+    "rating": 600,
+    "level": 1,
+    "type": "candidate",
+    "candidateIds": [
+      "s1.double"
+    ],
+    "classification": "proposed-review",
+    "note": "Ridervork koning+q",
+    "curriculum": {
+      "reviewed": true,
+      "reviewSource": "Handmatig: elementaire ridervork (koning + q) voor s1.double",
+      "skillIds": [
+        "s1.double"
+      ],
+      "verification": {
+        "kind": "tree",
+        "defenceReviewed": true,
+        "lines": [
+          [
+            "d7e5"
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "hand_s1double_3",
+    "turn": "w",
+    "pieces": [
+      {
+        "sq": "h8",
+        "piece": "wK"
+      },
+      {
+        "sq": "d7",
+        "piece": "wN"
+      },
+      {
+        "sq": "f7",
+        "piece": "bK"
+      },
+      {
+        "sq": "f3",
+        "piece": "bQ"
+      }
+    ],
+    "castling": "-",
+    "ep": null,
+    "solution": [
+      "d7e5"
+    ],
+    "themes": [
+      "fork",
+      "oneMove"
+    ],
+    "fen": "7K/3N1k2/8/8/8/5q2/8/8 w - - 0 1",
+    "url": "",
+    "rating": 600,
+    "level": 1,
+    "type": "candidate",
+    "candidateIds": [
+      "s1.double"
+    ],
+    "classification": "proposed-review",
+    "note": "Ridervork koning+q",
+    "curriculum": {
+      "reviewed": true,
+      "reviewSource": "Handmatig: elementaire ridervork (koning + q) voor s1.double",
+      "skillIds": [
+        "s1.double"
+      ],
+      "verification": {
+        "kind": "tree",
+        "defenceReviewed": true,
+        "lines": [
+          [
+            "d7e5"
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "hand_s1double_4",
+    "turn": "w",
+    "pieces": [
+      {
+        "sq": "f7",
+        "piece": "bK"
+      },
+      {
+        "sq": "c4",
+        "piece": "wN"
+      },
+      {
+        "sq": "f3",
+        "piece": "bQ"
+      },
+      {
+        "sq": "a1",
+        "piece": "wK"
+      }
+    ],
+    "castling": "-",
+    "ep": null,
+    "solution": [
+      "c4e5"
+    ],
+    "themes": [
+      "fork",
+      "oneMove"
+    ],
+    "fen": "8/5k2/8/8/2N5/5q2/8/K7 w - - 0 1",
+    "url": "",
+    "rating": 600,
+    "level": 1,
+    "type": "candidate",
+    "candidateIds": [
+      "s1.double"
+    ],
+    "classification": "proposed-review",
+    "note": "Ridervork koning+q",
+    "curriculum": {
+      "reviewed": true,
+      "reviewSource": "Handmatig: elementaire ridervork (koning + q) voor s1.double",
+      "skillIds": [
+        "s1.double"
+      ],
+      "verification": {
+        "kind": "tree",
+        "defenceReviewed": true,
+        "lines": [
+          [
+            "c4e5"
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "hand_s1double_5",
+    "turn": "w",
+    "pieces": [
+      {
+        "sq": "h8",
+        "piece": "wK"
+      },
+      {
+        "sq": "f7",
+        "piece": "bK"
+      },
+      {
+        "sq": "c4",
+        "piece": "wN"
+      },
+      {
+        "sq": "f3",
+        "piece": "bQ"
+      }
+    ],
+    "castling": "-",
+    "ep": null,
+    "solution": [
+      "c4e5"
+    ],
+    "themes": [
+      "fork",
+      "oneMove"
+    ],
+    "fen": "7K/5k2/8/8/2N5/5q2/8/8 w - - 0 1",
+    "url": "",
+    "rating": 600,
+    "level": 1,
+    "type": "candidate",
+    "candidateIds": [
+      "s1.double"
+    ],
+    "classification": "proposed-review",
+    "note": "Ridervork koning+q",
+    "curriculum": {
+      "reviewed": true,
+      "reviewSource": "Handmatig: elementaire ridervork (koning + q) voor s1.double",
+      "skillIds": [
+        "s1.double"
+      ],
+      "verification": {
+        "kind": "tree",
+        "defenceReviewed": true,
+        "lines": [
+          [
+            "c4e5"
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "hand_s1double_6",
+    "turn": "w",
+    "pieces": [
+      {
+        "sq": "f7",
+        "piece": "bK"
+      },
+      {
+        "sq": "c6",
+        "piece": "wN"
+      },
+      {
+        "sq": "f3",
+        "piece": "bQ"
+      },
+      {
+        "sq": "a1",
+        "piece": "wK"
+      }
+    ],
+    "castling": "-",
+    "ep": null,
+    "solution": [
+      "c6e5"
+    ],
+    "themes": [
+      "fork",
+      "oneMove"
+    ],
+    "fen": "8/5k2/2N5/8/8/5q2/8/K7 w - - 0 1",
+    "url": "",
+    "rating": 600,
+    "level": 1,
+    "type": "candidate",
+    "candidateIds": [
+      "s1.double"
+    ],
+    "classification": "proposed-review",
+    "note": "Ridervork koning+q",
+    "curriculum": {
+      "reviewed": true,
+      "reviewSource": "Handmatig: elementaire ridervork (koning + q) voor s1.double",
+      "skillIds": [
+        "s1.double"
+      ],
+      "verification": {
+        "kind": "tree",
+        "defenceReviewed": true,
+        "lines": [
+          [
+            "c6e5"
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "hand_s1double_7",
+    "turn": "w",
+    "pieces": [
+      {
+        "sq": "h8",
+        "piece": "wK"
+      },
+      {
+        "sq": "f7",
+        "piece": "bK"
+      },
+      {
+        "sq": "c6",
+        "piece": "wN"
+      },
+      {
+        "sq": "f3",
+        "piece": "bQ"
+      }
+    ],
+    "castling": "-",
+    "ep": null,
+    "solution": [
+      "c6e5"
+    ],
+    "themes": [
+      "fork",
+      "oneMove"
+    ],
+    "fen": "7K/5k2/2N5/8/8/5q2/8/8 w - - 0 1",
+    "url": "",
+    "rating": 600,
+    "level": 1,
+    "type": "candidate",
+    "candidateIds": [
+      "s1.double"
+    ],
+    "classification": "proposed-review",
+    "note": "Ridervork koning+q",
+    "curriculum": {
+      "reviewed": true,
+      "reviewSource": "Handmatig: elementaire ridervork (koning + q) voor s1.double",
+      "skillIds": [
+        "s1.double"
+      ],
+      "verification": {
+        "kind": "tree",
+        "defenceReviewed": true,
+        "lines": [
+          [
+            "c6e5"
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "hand_s1double_8",
+    "turn": "w",
+    "pieces": [
+      {
+        "sq": "f7",
+        "piece": "bK"
+      },
+      {
+        "sq": "g4",
+        "piece": "wN"
+      },
+      {
+        "sq": "f3",
+        "piece": "bQ"
+      },
+      {
+        "sq": "a1",
+        "piece": "wK"
+      }
+    ],
+    "castling": "-",
+    "ep": null,
+    "solution": [
+      "g4e5"
+    ],
+    "themes": [
+      "fork",
+      "oneMove"
+    ],
+    "fen": "8/5k2/8/8/6N1/5q2/8/K7 w - - 0 1",
+    "url": "",
+    "rating": 600,
+    "level": 1,
+    "type": "candidate",
+    "candidateIds": [
+      "s1.double"
+    ],
+    "classification": "proposed-review",
+    "note": "Ridervork koning+q",
+    "curriculum": {
+      "reviewed": true,
+      "reviewSource": "Handmatig: elementaire ridervork (koning + q) voor s1.double",
+      "skillIds": [
+        "s1.double"
+      ],
+      "verification": {
+        "kind": "tree",
+        "defenceReviewed": true,
+        "lines": [
+          [
+            "g4e5"
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "hand_s1double_9",
+    "turn": "w",
+    "pieces": [
+      {
+        "sq": "h8",
+        "piece": "wK"
+      },
+      {
+        "sq": "f7",
+        "piece": "bK"
+      },
+      {
+        "sq": "g4",
+        "piece": "wN"
+      },
+      {
+        "sq": "f3",
+        "piece": "bQ"
+      }
+    ],
+    "castling": "-",
+    "ep": null,
+    "solution": [
+      "g4e5"
+    ],
+    "themes": [
+      "fork",
+      "oneMove"
+    ],
+    "fen": "7K/5k2/8/8/6N1/5q2/8/8 w - - 0 1",
+    "url": "",
+    "rating": 600,
+    "level": 1,
+    "type": "candidate",
+    "candidateIds": [
+      "s1.double"
+    ],
+    "classification": "proposed-review",
+    "note": "Ridervork koning+q",
+    "curriculum": {
+      "reviewed": true,
+      "reviewSource": "Handmatig: elementaire ridervork (koning + q) voor s1.double",
+      "skillIds": [
+        "s1.double"
+      ],
+      "verification": {
+        "kind": "tree",
+        "defenceReviewed": true,
+        "lines": [
+          [
+            "g4e5"
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "hand_s1double_10",
+    "turn": "w",
+    "pieces": [
+      {
+        "sq": "f7",
+        "piece": "bK"
+      },
+      {
+        "sq": "g6",
+        "piece": "wN"
+      },
+      {
+        "sq": "f3",
+        "piece": "bQ"
+      },
+      {
+        "sq": "a1",
+        "piece": "wK"
+      }
+    ],
+    "castling": "-",
+    "ep": null,
+    "solution": [
+      "g6e5"
+    ],
+    "themes": [
+      "fork",
+      "oneMove"
+    ],
+    "fen": "8/5k2/6N1/8/8/5q2/8/K7 w - - 0 1",
+    "url": "",
+    "rating": 600,
+    "level": 1,
+    "type": "candidate",
+    "candidateIds": [
+      "s1.double"
+    ],
+    "classification": "proposed-review",
+    "note": "Ridervork koning+q",
+    "curriculum": {
+      "reviewed": true,
+      "reviewSource": "Handmatig: elementaire ridervork (koning + q) voor s1.double",
+      "skillIds": [
+        "s1.double"
+      ],
+      "verification": {
+        "kind": "tree",
+        "defenceReviewed": true,
+        "lines": [
+          [
+            "g6e5"
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "hand_s1double_11",
+    "turn": "w",
+    "pieces": [
+      {
+        "sq": "h8",
+        "piece": "wK"
+      },
+      {
+        "sq": "f7",
+        "piece": "bK"
+      },
+      {
+        "sq": "g6",
+        "piece": "wN"
+      },
+      {
+        "sq": "f3",
+        "piece": "bQ"
+      }
+    ],
+    "castling": "-",
+    "ep": null,
+    "solution": [
+      "g6e5"
+    ],
+    "themes": [
+      "fork",
+      "oneMove"
+    ],
+    "fen": "7K/5k2/6N1/8/8/5q2/8/8 w - - 0 1",
+    "url": "",
+    "rating": 600,
+    "level": 1,
+    "type": "candidate",
+    "candidateIds": [
+      "s1.double"
+    ],
+    "classification": "proposed-review",
+    "note": "Ridervork koning+q",
+    "curriculum": {
+      "reviewed": true,
+      "reviewSource": "Handmatig: elementaire ridervork (koning + q) voor s1.double",
+      "skillIds": [
+        "s1.double"
+      ],
+      "verification": {
+        "kind": "tree",
+        "defenceReviewed": true,
+        "lines": [
+          [
+            "g6e5"
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "hand_s1double_12",
+    "turn": "w",
+    "pieces": [
+      {
+        "sq": "d7",
+        "piece": "bQ"
+      },
+      {
+        "sq": "f7",
+        "piece": "bK"
+      },
+      {
+        "sq": "f3",
+        "piece": "wN"
+      },
+      {
+        "sq": "a1",
+        "piece": "wK"
+      }
+    ],
+    "castling": "-",
+    "ep": null,
+    "solution": [
+      "f3e5"
+    ],
+    "themes": [
+      "fork",
+      "oneMove"
+    ],
+    "fen": "8/3q1k2/8/8/8/5N2/8/K7 w - - 0 1",
+    "url": "",
+    "rating": 600,
+    "level": 1,
+    "type": "candidate",
+    "candidateIds": [
+      "s1.double"
+    ],
+    "classification": "proposed-review",
+    "note": "Ridervork koning+q",
+    "curriculum": {
+      "reviewed": true,
+      "reviewSource": "Handmatig: elementaire ridervork (koning + q) voor s1.double",
+      "skillIds": [
+        "s1.double"
+      ],
+      "verification": {
+        "kind": "tree",
+        "defenceReviewed": true,
+        "lines": [
+          [
+            "f3e5"
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "hand_s1double_13",
+    "turn": "w",
+    "pieces": [
+      {
+        "sq": "d7",
+        "piece": "bQ"
+      },
+      {
+        "sq": "f7",
+        "piece": "bK"
+      },
+      {
+        "sq": "f3",
+        "piece": "wN"
+      },
+      {
+        "sq": "h1",
+        "piece": "wK"
+      }
+    ],
+    "castling": "-",
+    "ep": null,
+    "solution": [
+      "f3e5"
+    ],
+    "themes": [
+      "fork",
+      "oneMove"
+    ],
+    "fen": "8/3q1k2/8/8/8/5N2/8/7K w - - 0 1",
+    "url": "",
+    "rating": 600,
+    "level": 1,
+    "type": "candidate",
+    "candidateIds": [
+      "s1.double"
+    ],
+    "classification": "proposed-review",
+    "note": "Ridervork koning+q",
+    "curriculum": {
+      "reviewed": true,
+      "reviewSource": "Handmatig: elementaire ridervork (koning + q) voor s1.double",
+      "skillIds": [
+        "s1.double"
+      ],
+      "verification": {
+        "kind": "tree",
+        "defenceReviewed": true,
+        "lines": [
+          [
+            "f3e5"
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "hand_s1double_14",
+    "turn": "w",
+    "pieces": [
+      {
+        "sq": "d7",
+        "piece": "bQ"
+      },
+      {
+        "sq": "f7",
+        "piece": "wN"
+      },
+      {
+        "sq": "f3",
+        "piece": "bK"
+      },
+      {
+        "sq": "a1",
+        "piece": "wK"
+      }
+    ],
+    "castling": "-",
+    "ep": null,
+    "solution": [
+      "f7e5"
+    ],
+    "themes": [
+      "fork",
+      "oneMove"
+    ],
+    "fen": "8/3q1N2/8/8/8/5k2/8/K7 w - - 0 1",
+    "url": "",
+    "rating": 600,
+    "level": 1,
+    "type": "candidate",
+    "candidateIds": [
+      "s1.double"
+    ],
+    "classification": "proposed-review",
+    "note": "Ridervork koning+q",
+    "curriculum": {
+      "reviewed": true,
+      "reviewSource": "Handmatig: elementaire ridervork (koning + q) voor s1.double",
+      "skillIds": [
+        "s1.double"
+      ],
+      "verification": {
+        "kind": "tree",
+        "defenceReviewed": true,
+        "lines": [
+          [
+            "f7e5"
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "hand_s1double_15",
+    "turn": "w",
+    "pieces": [
+      {
+        "sq": "d7",
+        "piece": "bQ"
+      },
+      {
+        "sq": "f7",
+        "piece": "wN"
+      },
+      {
+        "sq": "f3",
+        "piece": "bK"
+      },
+      {
+        "sq": "h1",
+        "piece": "wK"
+      }
+    ],
+    "castling": "-",
+    "ep": null,
+    "solution": [
+      "f7e5"
+    ],
+    "themes": [
+      "fork",
+      "oneMove"
+    ],
+    "fen": "8/3q1N2/8/8/8/5k2/8/7K w - - 0 1",
+    "url": "",
+    "rating": 600,
+    "level": 1,
+    "type": "candidate",
+    "candidateIds": [
+      "s1.double"
+    ],
+    "classification": "proposed-review",
+    "note": "Ridervork koning+q",
+    "curriculum": {
+      "reviewed": true,
+      "reviewSource": "Handmatig: elementaire ridervork (koning + q) voor s1.double",
+      "skillIds": [
+        "s1.double"
+      ],
+      "verification": {
+        "kind": "tree",
+        "defenceReviewed": true,
+        "lines": [
+          [
+            "f7e5"
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "hand_s1double_16",
+    "turn": "w",
+    "pieces": [
+      {
+        "sq": "d8",
+        "piece": "bK"
+      },
+      {
+        "sq": "b4",
+        "piece": "wN"
+      },
+      {
+        "sq": "d4",
+        "piece": "bQ"
+      },
+      {
+        "sq": "h1",
+        "piece": "wK"
+      }
+    ],
+    "castling": "-",
+    "ep": null,
+    "solution": [
+      "b4c6"
+    ],
+    "themes": [
+      "fork",
+      "oneMove"
+    ],
+    "fen": "3k4/8/8/8/1N1q4/8/8/7K w - - 0 1",
+    "url": "",
+    "rating": 600,
+    "level": 1,
+    "type": "candidate",
+    "candidateIds": [
+      "s1.double"
+    ],
+    "classification": "proposed-review",
+    "note": "Ridervork koning+q",
+    "curriculum": {
+      "reviewed": true,
+      "reviewSource": "Handmatig: elementaire ridervork (koning + q) voor s1.double",
+      "skillIds": [
+        "s1.double"
+      ],
+      "verification": {
+        "kind": "tree",
+        "defenceReviewed": true,
+        "lines": [
+          [
+            "b4c6"
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "hand_s1double_17",
+    "turn": "w",
+    "pieces": [
+      {
+        "sq": "a8",
+        "piece": "wK"
+      },
+      {
+        "sq": "d8",
+        "piece": "bK"
+      },
+      {
+        "sq": "b4",
+        "piece": "wN"
+      },
+      {
+        "sq": "d4",
+        "piece": "bQ"
+      }
+    ],
+    "castling": "-",
+    "ep": null,
+    "solution": [
+      "b4c6"
+    ],
+    "themes": [
+      "fork",
+      "oneMove"
+    ],
+    "fen": "K2k4/8/8/8/1N1q4/8/8/8 w - - 0 1",
+    "url": "",
+    "rating": 600,
+    "level": 1,
+    "type": "candidate",
+    "candidateIds": [
+      "s1.double"
+    ],
+    "classification": "proposed-review",
+    "note": "Ridervork koning+q",
+    "curriculum": {
+      "reviewed": true,
+      "reviewSource": "Handmatig: elementaire ridervork (koning + q) voor s1.double",
+      "skillIds": [
+        "s1.double"
+      ],
+      "verification": {
+        "kind": "tree",
+        "defenceReviewed": true,
+        "lines": [
+          [
+            "b4c6"
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "hand_s1double_18",
+    "turn": "w",
+    "pieces": [
+      {
+        "sq": "b8",
+        "piece": "wN"
+      },
+      {
+        "sq": "d8",
+        "piece": "bK"
+      },
+      {
+        "sq": "d4",
+        "piece": "bQ"
+      },
+      {
+        "sq": "h1",
+        "piece": "wK"
+      }
+    ],
+    "castling": "-",
+    "ep": null,
+    "solution": [
+      "b8c6"
+    ],
+    "themes": [
+      "fork",
+      "oneMove"
+    ],
+    "fen": "1N1k4/8/8/8/3q4/8/8/7K w - - 0 1",
+    "url": "",
+    "rating": 600,
+    "level": 1,
+    "type": "candidate",
+    "candidateIds": [
+      "s1.double"
+    ],
+    "classification": "proposed-review",
+    "note": "Ridervork koning+q",
+    "curriculum": {
+      "reviewed": true,
+      "reviewSource": "Handmatig: elementaire ridervork (koning + q) voor s1.double",
+      "skillIds": [
+        "s1.double"
+      ],
+      "verification": {
+        "kind": "tree",
+        "defenceReviewed": true,
+        "lines": [
+          [
+            "b8c6"
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "hand_s1double_19",
+    "turn": "w",
+    "pieces": [
+      {
+        "sq": "a8",
+        "piece": "wK"
+      },
+      {
+        "sq": "b8",
+        "piece": "wN"
+      },
+      {
+        "sq": "d8",
+        "piece": "bK"
+      },
+      {
+        "sq": "d4",
+        "piece": "bQ"
+      }
+    ],
+    "castling": "-",
+    "ep": null,
+    "solution": [
+      "b8c6"
+    ],
+    "themes": [
+      "fork",
+      "oneMove"
+    ],
+    "fen": "KN1k4/8/8/8/3q4/8/8/8 w - - 0 1",
+    "url": "",
+    "rating": 600,
+    "level": 1,
+    "type": "candidate",
+    "candidateIds": [
+      "s1.double"
+    ],
+    "classification": "proposed-review",
+    "note": "Ridervork koning+q",
+    "curriculum": {
+      "reviewed": true,
+      "reviewSource": "Handmatig: elementaire ridervork (koning + q) voor s1.double",
+      "skillIds": [
+        "s1.double"
+      ],
+      "verification": {
+        "kind": "tree",
+        "defenceReviewed": true,
+        "lines": [
+          [
+            "b8c6"
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "hand_s1double_20",
+    "turn": "w",
+    "pieces": [
+      {
+        "sq": "d8",
+        "piece": "bK"
+      },
+      {
+        "sq": "a5",
+        "piece": "wN"
+      },
+      {
+        "sq": "d4",
+        "piece": "bQ"
+      },
+      {
+        "sq": "h1",
+        "piece": "wK"
+      }
+    ],
+    "castling": "-",
+    "ep": null,
+    "solution": [
+      "a5c6"
+    ],
+    "themes": [
+      "fork",
+      "oneMove"
+    ],
+    "fen": "3k4/8/8/N7/3q4/8/8/7K w - - 0 1",
+    "url": "",
+    "rating": 600,
+    "level": 1,
+    "type": "candidate",
+    "candidateIds": [
+      "s1.double"
+    ],
+    "classification": "proposed-review",
+    "note": "Ridervork koning+q",
+    "curriculum": {
+      "reviewed": true,
+      "reviewSource": "Handmatig: elementaire ridervork (koning + q) voor s1.double",
+      "skillIds": [
+        "s1.double"
+      ],
+      "verification": {
+        "kind": "tree",
+        "defenceReviewed": true,
+        "lines": [
+          [
+            "a5c6"
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "hand_s1double_21",
+    "turn": "w",
+    "pieces": [
+      {
+        "sq": "a8",
+        "piece": "wK"
+      },
+      {
+        "sq": "d8",
+        "piece": "bK"
+      },
+      {
+        "sq": "a5",
+        "piece": "wN"
+      },
+      {
+        "sq": "d4",
+        "piece": "bQ"
+      }
+    ],
+    "castling": "-",
+    "ep": null,
+    "solution": [
+      "a5c6"
+    ],
+    "themes": [
+      "fork",
+      "oneMove"
+    ],
+    "fen": "K2k4/8/8/N7/3q4/8/8/8 w - - 0 1",
+    "url": "",
+    "rating": 600,
+    "level": 1,
+    "type": "candidate",
+    "candidateIds": [
+      "s1.double"
+    ],
+    "classification": "proposed-review",
+    "note": "Ridervork koning+q",
+    "curriculum": {
+      "reviewed": true,
+      "reviewSource": "Handmatig: elementaire ridervork (koning + q) voor s1.double",
+      "skillIds": [
+        "s1.double"
+      ],
+      "verification": {
+        "kind": "tree",
+        "defenceReviewed": true,
+        "lines": [
+          [
+            "a5c6"
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "hand_s1double_22",
+    "turn": "w",
+    "pieces": [
+      {
+        "sq": "d8",
+        "piece": "bK"
+      },
+      {
+        "sq": "a7",
+        "piece": "wN"
+      },
+      {
+        "sq": "d4",
+        "piece": "bQ"
+      },
+      {
+        "sq": "h1",
+        "piece": "wK"
+      }
+    ],
+    "castling": "-",
+    "ep": null,
+    "solution": [
+      "a7c6"
+    ],
+    "themes": [
+      "fork",
+      "oneMove"
+    ],
+    "fen": "3k4/N7/8/8/3q4/8/8/7K w - - 0 1",
+    "url": "",
+    "rating": 600,
+    "level": 1,
+    "type": "candidate",
+    "candidateIds": [
+      "s1.double"
+    ],
+    "classification": "proposed-review",
+    "note": "Ridervork koning+q",
+    "curriculum": {
+      "reviewed": true,
+      "reviewSource": "Handmatig: elementaire ridervork (koning + q) voor s1.double",
+      "skillIds": [
+        "s1.double"
+      ],
+      "verification": {
+        "kind": "tree",
+        "defenceReviewed": true,
+        "lines": [
+          [
+            "a7c6"
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "hand_s1double_23",
+    "turn": "w",
+    "pieces": [
+      {
+        "sq": "a8",
+        "piece": "wK"
+      },
+      {
+        "sq": "d8",
+        "piece": "bK"
+      },
+      {
+        "sq": "a7",
+        "piece": "wN"
+      },
+      {
+        "sq": "d4",
+        "piece": "bQ"
+      }
+    ],
+    "castling": "-",
+    "ep": null,
+    "solution": [
+      "a7c6"
+    ],
+    "themes": [
+      "fork",
+      "oneMove"
+    ],
+    "fen": "K2k4/N7/8/8/3q4/8/8/8 w - - 0 1",
+    "url": "",
+    "rating": 600,
+    "level": 1,
+    "type": "candidate",
+    "candidateIds": [
+      "s1.double"
+    ],
+    "classification": "proposed-review",
+    "note": "Ridervork koning+q",
+    "curriculum": {
+      "reviewed": true,
+      "reviewSource": "Handmatig: elementaire ridervork (koning + q) voor s1.double",
+      "skillIds": [
+        "s1.double"
+      ],
+      "verification": {
+        "kind": "tree",
+        "defenceReviewed": true,
+        "lines": [
+          [
+            "a7c6"
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "hand_s1double_24",
+    "turn": "w",
+    "pieces": [
+      {
+        "sq": "d8",
+        "piece": "bK"
+      },
+      {
+        "sq": "e5",
+        "piece": "wN"
+      },
+      {
+        "sq": "d4",
+        "piece": "bQ"
+      },
+      {
+        "sq": "h1",
+        "piece": "wK"
+      }
+    ],
+    "castling": "-",
+    "ep": null,
+    "solution": [
+      "e5c6"
+    ],
+    "themes": [
+      "fork",
+      "oneMove"
+    ],
+    "fen": "3k4/8/8/4N3/3q4/8/8/7K w - - 0 1",
+    "url": "",
+    "rating": 600,
+    "level": 1,
+    "type": "candidate",
+    "candidateIds": [
+      "s1.double"
+    ],
+    "classification": "proposed-review",
+    "note": "Ridervork koning+q",
+    "curriculum": {
+      "reviewed": true,
+      "reviewSource": "Handmatig: elementaire ridervork (koning + q) voor s1.double",
+      "skillIds": [
+        "s1.double"
+      ],
+      "verification": {
+        "kind": "tree",
+        "defenceReviewed": true,
+        "lines": [
+          [
+            "e5c6"
+          ]
+        ]
+      }
+    }
+  }
+]
