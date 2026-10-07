@@ -1,0 +1,111 @@
+:host {
+  --sq-light: #f0d9b5;
+  --sq-dark: #b58863;
+  --sq-selected: #829769;
+  --sq-light-hl: #cdd16a;
+  --sq-dark-hl: #aaa23a;
+  --border: #4a3728;
+}
+
+.board-wrapper {
+  display: inline-block;
+  user-select: none;
+}
+
+.chessboard {
+  display: grid;
+  grid-template-columns: repeat(8, 48px);
+  grid-template-rows: repeat(8, 48px);
+  border: 2px solid var(--border);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.sq {
+  width: 48px;
+  height: 48px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  cursor: default;
+  transition: background 0.12s;
+}
+
+.sq.light {
+  background: var(--sq-light);
+}
+
+.sq.dark {
+  background: var(--sq-dark);
+}
+
+.sq.selected {
+  background: var(--sq-selected) !important;
+}
+
+.sq.last-from {
+  background: var(--sq-light-hl) !important;
+}
+
+.sq.last-to {
+  background: var(--sq-dark-hl) !important;
+}
+
+.sq.can-move {
+  cursor: pointer;
+}
+
+.sq.can-move::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.18);
+  pointer-events: none;
+}
+
+.sq.can-capture::after {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: transparent;
+  border: 3px solid rgba(0, 0, 0, 0.18);
+}
+
+.coord {
+  position: absolute;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  pointer-events: none;
+  z-index: 3;
+  user-select: none;
+}
+
+.coord-rank {
+  top: 2px;
+  left: 3px;
+}
+
+.coord-file {
+  bottom: 2px;
+  right: 3px;
+}
+
+.sq.light .coord {
+  color: var(--sq-dark);
+}
+
+.sq.dark .coord {
+  color: var(--sq-light);
+}
+
+.piece {
+  font-size: 34px;
+  line-height: 1;
+  z-index: 2;
+  pointer-events: none;
+}

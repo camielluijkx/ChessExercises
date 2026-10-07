@@ -1,9 +1,78 @@
-h1 {
-  margin: 0 0 0.5rem;
+.oefenen h1 {
+  margin: 0;
   font-size: 1.5rem;
 }
 
-.placeholder {
-  margin: 0;
+.top-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.back-link {
+  font-size: 0.95rem;
+}
+
+.orientation {
+  margin: 0 0 0.35rem;
+  font-weight: 600;
+}
+
+.status {
+  margin: 0 0 1rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 6px;
+  background: #f4f4f4;
+}
+
+.status.correct {
+  background: #e8f5e9;
+  color: #1b5e20;
+}
+
+.status.wrong {
+  background: #ffebee;
+  color: #8b1a1a;
+}
+
+.notice {
+  padding: 0.75rem 1rem;
+  border-left: 3px solid #8b6914;
+  background: #fff8e6;
+}
+
+.board-area {
+  margin-bottom: 1rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.actions button {
+  padding: 0.45rem 0.9rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+}
+
+.actions button.primary {
+  background: #2c5530;
+  border-color: #2c5530;
+  color: #fff;
+}
+
+.actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.muted {
   color: #555;
 }

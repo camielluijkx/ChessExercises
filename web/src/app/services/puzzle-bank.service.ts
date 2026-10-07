@@ -15,6 +15,10 @@ export class PuzzleBankService {
   readonly count = computed(() => this.puzzles()?.length ?? 0);
   readonly error = this.loadError.asReadonly();
 
+  all(): Puzzle[] | null {
+    return this.puzzles();
+  }
+
   load(): void {
     if (this.requested) return;
     this.requested = true;

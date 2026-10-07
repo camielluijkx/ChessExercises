@@ -1,0 +1,22 @@
+<div class="board-wrapper">
+  <div class="chessboard" role="grid" aria-label="Schaakbord">
+    @for (sq of squares(); track sq.idx) {
+      <button
+        type="button"
+        class="{{ squareClass(sq.idx) }}"
+        [attr.aria-label]="'Veld ' + sq.fileLabel + sq.rankLabel"
+        (click)="onSquareClick(sq.idx)"
+      >
+        @if (sq.rankLabel) {
+          <span class="coord coord-rank">{{ sq.rankLabel }}</span>
+        }
+        @if (sq.fileLabel) {
+          <span class="coord coord-file">{{ sq.fileLabel }}</span>
+        }
+        @if (pieceAt(sq.idx); as piece) {
+          <span class="piece" aria-hidden="true">{{ piece }}</span>
+        }
+      </button>
+    }
+  </div>
+</div>

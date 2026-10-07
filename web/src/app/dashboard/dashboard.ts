@@ -1,4 +1,5 @@
 import { Component, computed, effect, inject, OnInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 import { CurriculumService } from '../services/curriculum.service';
 import { MasteryService } from '../services/mastery.service';
@@ -7,6 +8,7 @@ import { PuzzleBankService } from '../services/puzzle-bank.service';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
+  imports: [RouterLink],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })

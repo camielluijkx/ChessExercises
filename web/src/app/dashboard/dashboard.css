@@ -3,6 +3,24 @@
   font-size: 1.5rem;
 }
 
+.actions-row {
+  margin: 0 0 0.75rem;
+}
+
+.doorgaan {
+  display: inline-block;
+  padding: 0.5rem 1.1rem;
+  border-radius: 6px;
+  background: #2c5530;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.doorgaan:hover {
+  background: #234428;
+}
+
 .progress {
   margin: 0 0 0.35rem;
   font-size: 1.05rem;

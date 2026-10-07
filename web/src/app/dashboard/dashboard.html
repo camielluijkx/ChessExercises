@@ -1,6 +1,12 @@
 <section class="dashboard">
   <h1>Tactische voortgang</h1>
 
+  @if (curriculumReady() && masteryReady() && puzzleReady()) {
+    <p class="actions-row">
+      <a routerLink="/oefenen" class="doorgaan">Doorgaan</a>
+    </p>
+  }
+
   @if (curriculumReady() && masteryReady()) {
     <p class="progress" aria-live="polite">{{ progressLabel() }}</p>
     @if (storageNotice()) {

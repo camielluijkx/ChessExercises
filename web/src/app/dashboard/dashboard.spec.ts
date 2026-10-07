@@ -1,6 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
 import { Dashboard } from './dashboard';
 import { memoryIdb, PROFILE_IDB, PROFILE_KV } from '../services/profile-store.service';
@@ -100,6 +101,7 @@ describe('Dashboard', () => {
     await TestBed.configureTestingModule({
       imports: [Dashboard],
       providers: [
+        provideRouter([]),
         provideHttpClient(),
         provideHttpClientTesting(),
         { provide: PROFILE_KV, useValue: kv },
@@ -155,5 +157,13 @@ describe('Dashboard', () => {
     const fixture = await readyDashboard();
     const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
     expect(text).toContain('Puzzelbank geladen: 2 stellingen');
+  });
+
+  it('toont Doorgaan-knop naar oefenen', async () => {
+    const fixture = await readyDashboard();
+    const link = (fixture.nativeElement as HTMLElement).querySelector('a.doorgaan');
+    expect(link).not.toBeNull();
+    expect(link?.getAttribute('href')).toContain('/oefenen');
+    expect(link?.textContent?.trim()).toBe('Doorgaan');
   });
 });

@@ -1,4 +1,41 @@
-<section>
-  <h1>Oefenen</h1>
-  <p class="placeholder">Bord en oefenstroom volgen in een later ticket.</p>
+<section class="oefenen">
+  <header class="top-row">
+    <h1>Oefenen</h1>
+    <a routerLink="/" class="back-link">Terug naar dashboard</a>
+  </header>
+
+  @if (loading()) {
+    <p class="muted">Laden…</p>
+  } @else if (pendingToets()) {
+    <p class="notice" role="status">
+      Er staat een toets klaar. Rond die eerst af via
+      <a routerLink="/toets">Toets</a>, of ga terug naar het dashboard.
+    </p>
+  } @else if (noPractice()) {
+    <p class="muted" role="status">Geen oefening beschikbaar voor je huidige leerdoelen.</p>
+  } @else if (showBoard()) {
+    <p class="orientation">{{ orientationTip() }}</p>
+    <p class="status" [class]="statusKind()" role="status" aria-live="polite">{{ statusText() }}</p>
+
+    <div class="board-area">
+      <app-chess-board
+        [fen]="boardFen()"
+        [orientation]="boardOrientation()"
+        [interactive]="canInteract()"
+        (moveMade)="onMove($event)"
+      />
+    </div>
+
+    <div class="actions">
+      <button type="button" class="secondary" (click)="hint()" [disabled]="!canInteract()">
+        Hint
+      </button>
+      <button type="button" class="secondary" (click)="reset()" [disabled]="!canInteract()">
+        Opnieuw
+      </button>
+      @if (puzzleDone()) {
+        <button type="button" class="primary" (click)="nextPuzzle()">Volgende puzzel</button>
+      }
+    </div>
+  }
 </section>

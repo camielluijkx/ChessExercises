@@ -1,7 +1,7 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 
 import { createTacticalMastery, TacticalMasteryApi } from '../domain/mastery';
-import { MasteryProfile } from '../domain/mastery.types';
+import { BankItem, MasteryProfile } from '../domain/mastery.types';
 import { Skill } from '../domain/curriculum.types';
 
 import { CurriculumService } from './curriculum.service';
@@ -12,12 +12,16 @@ export class MasteryService {
   private readonly curriculum = inject(CurriculumService);
   private readonly store = inject(ProfileStore);
   private readonly profileSignal = signal<MasteryProfile | null>(null);
+  private readonly profileTick = signal(0);
   private readonly availableSignal = signal(true);
   private readonly damagedSignal = signal(false);
   private api: TacticalMasteryApi | null = null;
   private bootstrapping = false;
 
-  readonly profile = this.profileSignal.asReadonly();
+  readonly profile = computed(() => {
+    this.profileTick();
+    return this.profileSignal();
+  });
   readonly storageAvailable = this.availableSignal.asReadonly();
   readonly damagedProgress = this.damagedSignal.asReadonly();
 
@@ -73,9 +77,58 @@ export class MasteryService {
     void this.bootstrap();
   }
 
+  getApi(): TacticalMasteryApi | null {
+    return this.api;
+  }
+
+  hasOpenToets(): boolean {
+    return Boolean(this.profile()?.pending);
+  }
+
+  skillLabel(id: string): string {
+    return this.curriculum.byId(id)?.label.nl ?? id;
+  }
+
+  mastered(id: string): boolean {
+    const api = this.api;
+    const profile = this.profileSignal();
+    return Boolean(api && profile && api.mastered(profile, id));
+  }
+
+  blockers(id: string): string[] {
+    const api = this.api;
+    const profile = this.profileSignal();
+    return api && profile ? api.blockers(profile, id) : [];
+  }
+
+  choosePractice(
+    bankItems: BankItem[],
+    skillId?: string | null
+  ): { item: BankItem; skill: string; maintenance: boolean } | null {
+    const api = this.api;
+    const profile = this.profileSignal();
+    if (!api || !profile) return null;
+    const pick = api.choosePractice(profile, bankItems, skillId ?? null);
+    if (pick) this.touchProfile();
+    return pick;
+  }
+
+  recordPracticeResult(skillId: string, score: number): void {
+    const api = this.api;
+    const profile = this.profileSignal();
+    if (!api || !profile) return;
+    api.practiceResult(profile, skillId, score);
+    this.touchProfile();
+    void this.persist();
+  }
+
+  private touchProfile(): void {
+    this.profileTick.update((n) => n + 1);
+  }
+
   /** Schrijft het huidige profiel naar IndexedDB (no-op als niet ready). */
   async persist(): Promise<boolean> {
-    const profile = this.profile();
+    const profile = this.profileSignal();
     if (!profile) return false;
     const ok = await this.store.save(profile);
     this.availableSignal.set(ok);

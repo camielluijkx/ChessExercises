@@ -3,6 +3,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { catchError, of, tap } from 'rxjs';
 
 import { CurriculumData, Skill } from '../domain/curriculum.types';
+import { Puzzle } from '../domain/puzzle.types';
 import { CurriculumPort } from '../domain/mastery.types';
 
 @Injectable({ providedIn: 'root' })
@@ -56,5 +57,45 @@ export class CurriculumService {
 
   stepSkills(step: number): Skill[] {
     return this.skills().filter((s) => s.step === step);
+  }
+
+  candidates(puzzle: Puzzle): string[] {
+    const skills = this.skills();
+    const byId = Object.fromEntries(skills.map((s) => [s.id, s]));
+    if (Array.isArray(puzzle.candidateIds)) {
+      const depthException = puzzle.curriculum?.['depthException'];
+      return puzzle.candidateIds.filter(
+        (id) =>
+          byId[id] &&
+          (byId[id].ply === puzzle.solution?.length ||
+            (typeof depthException === 'string' && depthException.trim().length > 10))
+      );
+    }
+    const tags = new Set(puzzle.themes ?? []);
+    const legacy: Record<string, string> = {
+      mat_in_1: 'mateIn1',
+      mat_in_2: 'mateIn2',
+      winst_materiaal: 'hangingPiece',
+      tweevoudige_aanval: 'fork',
+      penning: 'pin',
+      aftrekschaak: 'discoveredCheck',
+      dubbel_schaak: 'doubleCheck',
+      rontgen_aanval: 'xRayAttack',
+      afleiding: 'attraction',
+      overbelasting: 'deflection',
+      tussenspel: 'intermezzo',
+      zuivering: 'clearance',
+    };
+    if (legacy[puzzle.type]) tags.add(legacy[puzzle.type]);
+    return skills
+      .filter(
+        (s) =>
+          s.ply === puzzle.solution?.length &&
+          s.tags.length &&
+          (['s4.pinattraction', 's4.magnet'].includes(s.id)
+            ? s.tags.every((t) => tags.has(t))
+            : s.tags.some((t) => tags.has(t)))
+      )
+      .map((s) => s.id);
   }
 }
