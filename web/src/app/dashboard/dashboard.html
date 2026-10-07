@@ -3,6 +3,9 @@
 
   @if (curriculumReady() && masteryReady()) {
     <p class="progress" aria-live="polite">{{ progressLabel() }}</p>
+    @if (storageNotice()) {
+      <p class="storage-notice" role="status">{{ storageNotice() }}</p>
+    }
   }
 
   <section class="stap" [attr.aria-labelledby]="'stap-' + activeStep() + '-heading'">

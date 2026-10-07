@@ -3,6 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { TestBed } from '@angular/core/testing';
 
 import { Dashboard } from './dashboard';
+import { memoryIdb, PROFILE_IDB, PROFILE_KV } from '../services/profile-store.service';
 
 const CURRICULUM = {
   skills: [
@@ -86,9 +87,24 @@ describe('Dashboard', () => {
   let http: HttpTestingController;
 
   beforeEach(async () => {
+    const kv = {
+      map: {} as Record<string, string>,
+      getItem: (k: string) => (k in kv.map ? kv.map[k] : null),
+      setItem: (k: string, v: string) => {
+        kv.map[k] = v;
+      },
+      removeItem: (k: string) => {
+        delete kv.map[k];
+      },
+    };
     await TestBed.configureTestingModule({
       imports: [Dashboard],
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: PROFILE_KV, useValue: kv },
+        { provide: PROFILE_IDB, useValue: memoryIdb(null) },
+      ],
     }).compileComponents();
     http = TestBed.inject(HttpTestingController);
   });
@@ -102,21 +118,25 @@ describe('Dashboard', () => {
     http.expectOne('data/puzzles.json').flush([{ id: 'p1' }, { id: 'p2' }]);
   }
 
-  it('toont de Stappenmethode-disclaimer', () => {
+  async function readyDashboard() {
     const fixture = TestBed.createComponent(Dashboard);
     fixture.detectChanges();
     flushAssets();
     fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    return fixture;
+  }
+
+  it('toont de Stappenmethode-disclaimer', async () => {
+    const fixture = await readyDashboard();
     const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
     expect(text).toContain('geen volledig Stappendiploma');
     expect(text).toContain('Alleen gedekte tactische vaardigheden');
   });
 
-  it('toont voortgangsregel en stap-1-leerdoelen met Nederlandse Stappenmethode-labels', () => {
-    const fixture = TestBed.createComponent(Dashboard);
-    fixture.detectChanges();
-    flushAssets();
-    fixture.detectChanges();
+  it('toont voortgangsregel en stap-1-leerdoelen met Nederlandse Stappenmethode-labels', async () => {
+    const fixture = await readyDashboard();
     const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
     expect(text).toContain('Stap 1 · 0/6 beheerst');
     expect(text).toContain('Stap 1');
@@ -131,11 +151,8 @@ describe('Dashboard', () => {
     expect(text).not.toContain('Win undefended material');
   });
 
-  it('toont dat de puzzelbank geladen is', () => {
-    const fixture = TestBed.createComponent(Dashboard);
-    fixture.detectChanges();
-    flushAssets();
-    fixture.detectChanges();
+  it('toont dat de puzzelbank geladen is', async () => {
+    const fixture = await readyDashboard();
     const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
     expect(text).toContain('Puzzelbank geladen: 2 stellingen');
   });

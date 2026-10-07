@@ -4,9 +4,15 @@
 }
 
 .progress {
-  margin: 0 0 1rem;
+  margin: 0 0 0.35rem;
   font-size: 1.05rem;
   font-weight: 600;
+}
+
+.storage-notice {
+  margin: 0 0 1rem;
+  color: #8b1a1a;
+  font-size: 0.95rem;
 }
 
 .stap {

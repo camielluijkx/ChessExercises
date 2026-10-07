@@ -21,6 +21,7 @@ export class Dashboard implements OnInit {
   readonly curriculumReady = this.curriculum.ready;
   readonly curriculumError = this.curriculum.error;
   readonly masteryReady = this.mastery.ready;
+  readonly storageNotice = this.mastery.storageNotice;
   readonly puzzleCount = this.puzzleBank.count;
   readonly puzzleReady = this.puzzleBank.ready;
   readonly puzzleError = this.puzzleBank.error;

@@ -11,6 +11,9 @@
 npm-debug.log
 yarn-error.log
 
+# Local Chrome for Testing (Karma)
+/chrome
+
 # IDEs and editors
 .idea/
 .project
