@@ -3,7 +3,7 @@
 
   @if (curriculumReady() && masteryReady() && puzzleReady()) {
     <p class="actions-row">
-      <a routerLink="/oefenen" class="doorgaan">Doorgaan</a>
+      <a [routerLink]="doorgaanLink()" class="doorgaan">Doorgaan</a>
     </p>
   }
 

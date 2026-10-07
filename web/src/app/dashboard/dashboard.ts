@@ -30,6 +30,10 @@ export class Dashboard implements OnInit {
 
   readonly stapHeading = computed(() => `Stap ${this.activeStep()}`);
 
+  readonly doorgaanLink = computed(() =>
+    this.mastery.hasOpenToets() ? '/toets' : '/oefenen'
+  );
+
   constructor() {
     effect(() => {
       if (this.curriculum.ready()) this.mastery.init();

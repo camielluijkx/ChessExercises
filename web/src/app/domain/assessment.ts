@@ -1,6 +1,13 @@
 import { Chess, Color, Square } from 'chess.js';
 
-import { AssessmentItem, CandidatesPort, PuzzleInput, VerificationMeta } from './assessment.types';
+import {
+  AssessmentItem,
+  CandidatesPort,
+  EnginePort,
+  GradeResult,
+  PuzzleInput,
+  VerificationMeta,
+} from './assessment.types';
 import { Puzzle } from './puzzle.types';
 
 const value: Record<string, number> = { p: 1, n: 3, b: 3, r: 5, q: 9, k: 0 };
@@ -256,4 +263,139 @@ export function bank(puzzles: Puzzle[], C: CandidatesPort): AssessmentItem[] {
     }
   }
   return result.sort((a, b) => a.puzzle.id.localeCompare(b.puzzle.id));
+}
+
+export function exactMate(
+  chess: Chess,
+  ply: number,
+  learner: Color,
+  budget: { left: number }
+): number | null {
+  if (--budget.left < 0) return null;
+  if (chess.isCheckmate()) return chess.turn() !== learner ? 0 : null;
+  if (ply === 0 || chess.isStalemate()) return Infinity;
+  const defending = chess.turn() !== learner;
+  let distance = defending ? 0 : Infinity;
+  for (const move of chess.moves({ verbose: true })) {
+    chess.move(move);
+    const d = exactMate(chess, ply - 1, learner, budget);
+    chess.undo();
+    if (d === null) return null;
+    if (defending && d === Infinity) return Infinity;
+    if (!defending && d === Infinity) continue;
+    distance = defending ? Math.max(distance, 1 + d) : Math.min(distance, 1 + d);
+    if (!defending && distance === 1) return 1;
+  }
+  return distance;
+}
+
+export async function grade(
+  item: AssessmentItem,
+  line: string[],
+  engine: EnginePort | null = null
+): Promise<GradeResult> {
+  const unknown = (reason: string): GradeResult => ({ outcome: 'unknown', reason });
+  if (!item?.eligible || !item.verification) return unknown('unverified');
+  const solutionLen = item.puzzle.solution?.length ?? 0;
+  if (!Array.isArray(line) || !solutionLen || line.length !== solutionLen) {
+    return { outcome: 'wrong', reason: 'length' };
+  }
+  const chess = new Chess(item.fen);
+  const learner = chess.turn();
+  const v = item.verification;
+  if (v.kind === 'safeCapture') {
+    try {
+      return { outcome: safeCapture(item.fen, line[0]) ? 'correct' : 'wrong', reason: 'safeCapture' };
+    } catch {
+      return { outcome: 'wrong', reason: 'illegal' };
+    }
+  }
+  if (v.kind === 'safeEscape') {
+    try {
+      return { outcome: safeEscape(item.fen, line[0]) ? 'correct' : 'wrong', reason: 'safeEscape' };
+    } catch {
+      return { outcome: 'wrong', reason: 'illegal' };
+    }
+  }
+  if (v.kind === 'tree') {
+    try {
+      line.forEach((m) => play(chess, m));
+    } catch {
+      return { outcome: 'wrong', reason: 'illegal' };
+    }
+    return v.lines?.some(
+      (l) => Array.isArray(l) && l.map((m) => m.toLowerCase()).join(' ') === line.join(' ')
+    )
+      ? { outcome: 'correct', reason: 'reviewed-tree' }
+      : unknown('alternative');
+  }
+  if (v.kind === 'mate') {
+    if (line.length > 5) return unknown('search-limit');
+    const budget = { left: 100000 };
+    for (let i = 0; i < line.length; i++) {
+      const before = exactMate(chess, line.length - i, learner, budget);
+      if (before === null) return unknown('search-limit');
+      if (before === Infinity) return unknown('unproven-mate');
+      try {
+        play(chess, line[i]);
+      } catch {
+        return { outcome: 'wrong', reason: 'illegal' };
+      }
+      const after = exactMate(chess, line.length - i - 1, learner, budget);
+      if (after === null) return unknown('search-limit');
+      if (after === Infinity || before !== after + 1) {
+        return { outcome: 'wrong', reason: 'defence-or-move' };
+      }
+    }
+    return {
+      outcome: chess.isCheckmate() && chess.turn() !== learner ? 'correct' : 'wrong',
+      reason: 'mate',
+    };
+  }
+  if (v.kind === 'engine') {
+    if (!engine) return unknown('engine-unavailable');
+    const initialMaterial = material(chess, learner);
+    try {
+      for (const uci of line) {
+        const initial = chess.fen();
+        play(chess, uci);
+        const [best, chosen] = await engine.compare(initial, uci);
+        if (!best || !chosen || best.depth < 12 || chosen.depth < 12 || best.bound || chosen.bound) {
+          return unknown('engine-confidence');
+        }
+        if (best.type !== chosen.type) return unknown('engine-disagreement');
+        if (best.type === 'mate') {
+          if (best.value !== chosen.value) {
+            return best.value > 0 && chosen.value <= 0
+              ? { outcome: 'wrong', reason: 'lost-mate' }
+              : unknown('mate-distance');
+          }
+        } else {
+          const loss = best.value - chosen.value;
+          if (loss > 80) return { outcome: 'wrong', reason: 'defence-or-move' };
+          if (loss > 20 || loss < -20) return unknown('engine-confidence');
+        }
+      }
+      if (v.objective?.kind === 'mate') {
+        return {
+          outcome: chess.isCheckmate() && chess.turn() !== learner ? 'correct' : 'wrong',
+          reason: 'mate',
+        };
+      }
+      if (v.objective?.kind === 'material') {
+        if (!Number.isFinite(v.objective.gain) || (v.objective.gain ?? 0) <= 0) {
+          return unknown('objective');
+        }
+        return {
+          outcome: material(chess, learner) - initialMaterial >= (v.objective.gain ?? 0)
+            ? 'correct'
+            : 'wrong',
+          reason: 'material',
+        };
+      }
+    } catch {
+      return unknown('engine-unavailable');
+    }
+  }
+  return unknown('unsupported');
 }

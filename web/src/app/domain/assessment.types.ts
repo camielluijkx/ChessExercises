@@ -35,3 +35,19 @@ export interface CandidatesPort {
   byId: Record<string, { ply: number }>;
   candidates(puzzle: Puzzle | PuzzleInput): string[];
 }
+
+export interface GradeResult {
+  outcome: 'correct' | 'wrong' | 'unknown';
+  reason: string;
+}
+
+export interface EngineCompareResult {
+  depth: number;
+  type: string;
+  value: number;
+  bound?: boolean;
+}
+
+export interface EnginePort {
+  compare(fen: string, uci: string): Promise<[EngineCompareResult | null, EngineCompareResult | null]>;
+}

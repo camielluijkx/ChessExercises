@@ -1,7 +1,13 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 
 import { createTacticalMastery, TacticalMasteryApi } from '../domain/mastery';
-import { BankItem, MasteryProfile } from '../domain/mastery.types';
+import {
+  AnswerOutcome,
+  BankItem,
+  MasteryProfile,
+  PendingAssessment,
+  SkillCycle,
+} from '../domain/mastery.types';
 import { Skill } from '../domain/curriculum.types';
 
 import { CurriculumService } from './curriculum.service';
@@ -118,6 +124,100 @@ export class MasteryService {
     const profile = this.profileSignal();
     if (!api || !profile) return;
     api.practiceResult(profile, skillId, score);
+    this.touchProfile();
+    void this.persist();
+  }
+
+  pending(): PendingAssessment | null {
+    return this.profileSignal()?.pending ?? null;
+  }
+
+  session() {
+    return this.profileSignal()?.session ?? null;
+  }
+
+  cycleFor(skillId: string): SkillCycle | null {
+    const api = this.api;
+    const profile = this.profileSignal();
+    return api && profile ? (api.state(profile, skillId).cycle ?? null) : null;
+  }
+
+  toetsCounterLabel(): string {
+    const pending = this.pending();
+    const api = this.api;
+    const profile = this.profileSignal();
+    if (!pending || !api || !profile) return '';
+    const parts: string[] = ['Toets'];
+    if (pending.kind !== 'diagnostic') {
+      parts.push(`Reeks ${api.state(profile, pending.skillId).cycle?.phase ?? 1}`);
+      const slot = profile.session?.slots?.find((s) => s.id === pending.skillId);
+      if (slot) {
+        const count = profile.session?.counts[pending.skillId] ?? 0;
+        parts.push(`Opgave ${count + 1} van ${slot.quota}`);
+      }
+    }
+    parts.push(
+      `${pending.line.length}/${pending.puzzle.solution?.length ?? 0} halve zetten ingevoerd.`
+    );
+    return parts.join(' · ');
+  }
+
+  startToetsSession(
+    bank: BankItem[],
+    skillId?: string | null,
+    now = Date.now()
+  ): Record<string, unknown> {
+    const api = this.api;
+    const profile = this.profileSignal();
+    if (!api || !profile) return { ok: false, reason: 'not-ready' };
+    if (profile.pending) return { ok: true, resumed: true, pending: profile.pending };
+    const step = api.activeStep(profile);
+    let target = skillId ?? null;
+    if (!target) {
+      const skills = this.curriculum
+        .stepSkills(step)
+        .filter((s) => !api.mastered(profile, s.id) && !api.blockers(profile, s.id).length);
+      target =
+        skills.map((s) => api.target(profile, s.id)).find((id): id is string => Boolean(id)) ??
+        skills[0]?.id ??
+        null;
+    }
+    const result = api.startSession(profile, bank, step, now, Math.random, target);
+    if (result['ok']) this.touchProfile();
+    void this.persist();
+    return result;
+  }
+
+  continueToets(bank: BankItem[], now = Date.now()): Record<string, unknown> {
+    const api = this.api;
+    const profile = this.profileSignal();
+    if (!api || !profile) return { ok: false, reason: 'not-ready' };
+    if (profile.pending) return { ok: false, reason: 'pending' };
+    const result =
+      profile.session?.state === 'active'
+        ? api.nextSession(profile, bank, now, Math.random)
+        : api.startSession(profile, bank, api.activeStep(profile), now, Math.random);
+    if (result['ok']) this.touchProfile();
+    void this.persist();
+    return result;
+  }
+
+  submitToetsAnswer(outcome: AnswerOutcome, now = Date.now()): Record<string, unknown> {
+    const api = this.api;
+    const profile = this.profileSignal();
+    if (!api || !profile) return { ok: false, reason: 'not-ready' };
+    const result = api.answer(profile, outcome, now);
+    this.touchProfile();
+    void this.persist();
+    return result;
+  }
+
+  updatePendingLine(line: string[], draft?: string): void {
+    const profile = this.profileSignal();
+    if (!profile?.pending) return;
+    profile.pending.line = line;
+    profile.pending.draft =
+      draft !== undefined ? draft.slice(0, 500) : line.join(' ');
     this.touchProfile();
     void this.persist();
   }

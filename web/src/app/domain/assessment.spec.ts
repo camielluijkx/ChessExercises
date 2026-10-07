@@ -4,6 +4,7 @@ import {
   bank,
   describe as assessDescribe,
   fen,
+  grade,
   identity,
   safeCapture,
   safeEscape,
@@ -90,5 +91,28 @@ describe('assessment', () => {
     ).toEqual([
       's1.escape',
     ]);
+  });
+
+  it('grade keurt mat-in-één goed', async () => {
+    const mate = puzzle('7k/5Q2/6K1/8/8/8/8/8 w - - 0 1', ['f7g7']);
+    const item = assessDescribe(mate, stubCurriculum)!;
+    const result = await grade(item, ['f7g7']);
+    expect(result.outcome).toBe('correct');
+    expect(result.reason).toBe('mate');
+  });
+
+  it('grade wijst verkeerde mat-lijn af', async () => {
+    const mate = puzzle('7k/5Q2/6K1/8/8/8/8/8 w - - 0 1', ['f7g7']);
+    const item = assessDescribe(mate, stubCurriculum)!;
+    const result = await grade(item, ['f7e7']);
+    expect(result.outcome).toBe('wrong');
+  });
+
+  it('grade wijst verkeerde lengte af', async () => {
+    const mate = puzzle('7k/5Q2/6K1/8/8/8/8/8 w - - 0 1', ['f7g7']);
+    const item = assessDescribe(mate, stubCurriculum)!;
+    const result = await grade(item, []);
+    expect(result.outcome).toBe('wrong');
+    expect(result.reason).toBe('length');
   });
 });

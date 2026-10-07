@@ -1,5 +1,77 @@
-<section>
-  <h1>Toetsmodus</h1>
-  <p class="subtitle">Beheersingstoets · onderhoud als subtitel</p>
-  <p class="placeholder">Blinde toetsreeks volgt in een later ticket.</p>
+<section class="toets">
+  <header class="top-row">
+    <div>
+      <h1>Toetsmodus</h1>
+      <p class="subtitle">Beheersingstoets</p>
+    </div>
+    <a routerLink="/" class="back-link">Terug naar dashboard</a>
+  </header>
+
+  @if (phase() === 'loading') {
+    <p class="muted">Laden…</p>
+  } @else if (phase() === 'waiting') {
+    <p class="notice" role="status">{{ waitingLabel() }}</p>
+  } @else if (phase() === 'blocked') {
+    <p class="notice" role="status">{{ blockedMessage() }}</p>
+  } @else if (phase() === 'feedback') {
+    <p class="counter" aria-live="polite">{{ counterLabel() }}</p>
+    <p class="status" [class]="statusKind()" role="status" aria-live="polite">
+      {{ feedbackMessage() }}
+    </p>
+    <div class="actions">
+      <button type="button" class="primary" (click)="continueAssessment()">Volgende</button>
+    </div>
+  } @else {
+    <p class="counter" aria-live="polite">{{ counterLabel() }}</p>
+    <p class="status info" role="status" aria-live="polite">{{ statusText() }}</p>
+
+    <div class="board-area">
+      <app-chess-board
+        [fen]="boardFen()"
+        [orientation]="boardOrientation()"
+        [interactive]="canInteract() && !interactionLocked()"
+        (moveMade)="onMove($event)"
+      />
+    </div>
+
+    <label class="variant-label">
+      Variant (UCI)
+      <input
+        type="text"
+        class="variant-input"
+        [value]="variantInput()"
+        (input)="onVariantInput($any($event.target).value)"
+        [disabled]="interactionLocked()"
+        spellcheck="false"
+        autocomplete="off"
+      />
+    </label>
+
+    <div class="actions">
+      <button
+        type="button"
+        class="primary"
+        (click)="submitVariant()"
+        [disabled]="interactionLocked()"
+      >
+        Variant indienen
+      </button>
+      <button
+        type="button"
+        class="secondary"
+        (click)="skipAssessment()"
+        [disabled]="interactionLocked()"
+      >
+        Ik weet het niet
+      </button>
+      <button
+        type="button"
+        class="secondary"
+        (click)="undoVariant()"
+        [disabled]="interactionLocked()"
+      >
+        Laatste zet terug
+      </button>
+    </div>
+  }
 </section>

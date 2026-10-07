@@ -4,6 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
 import { Dashboard } from './dashboard';
+import { MasteryService } from '../services/mastery.service';
 import { memoryIdb, PROFILE_IDB, PROFILE_KV } from '../services/profile-store.service';
 
 const CURRICULUM = {
@@ -165,5 +166,13 @@ describe('Dashboard', () => {
     expect(link).not.toBeNull();
     expect(link?.getAttribute('href')).toContain('/oefenen');
     expect(link?.textContent?.trim()).toBe('Doorgaan');
+  });
+
+  it('Doorgaan wijst naar toets bij open pending', async () => {
+    const mastery = TestBed.inject(MasteryService);
+    spyOn(mastery, 'hasOpenToets').and.returnValue(true);
+    const fixture = await readyDashboard();
+    const link = (fixture.nativeElement as HTMLElement).querySelector('a.doorgaan');
+    expect(link?.getAttribute('href')).toContain('/toets');
   });
 });
