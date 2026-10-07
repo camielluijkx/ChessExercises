@@ -112,12 +112,13 @@ describe('Dashboard', () => {
     expect(text).toContain('Alleen gedekte tactische vaardigheden');
   });
 
-  it('toont stap-1-leerdoelen met Nederlandse Stappenmethode-labels', () => {
+  it('toont voortgangsregel en stap-1-leerdoelen met Nederlandse Stappenmethode-labels', () => {
     const fixture = TestBed.createComponent(Dashboard);
     fixture.detectChanges();
     flushAssets();
     fixture.detectChanges();
     const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
+    expect(text).toContain('Stap 1 · 0/6 beheerst');
     expect(text).toContain('Stap 1');
     expect(text).toContain('Mat in één');
     expect(text).toContain('Schaak opheffen');

@@ -12,6 +12,9 @@ __pycache__/
 .vscode/
 .idea/
 
+# Node (root esbuild for mastery build)
+node_modules/
+
 # Angular app
 web/node_modules/
 web/dist/

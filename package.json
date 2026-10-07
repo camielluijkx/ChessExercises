@@ -2,11 +2,15 @@
   "name": "chess-exercises",
   "private": true,
   "scripts": {
-    "test": "node --test tests/*.test.js",
+    "build:mastery": "node scripts/build-mastery.js",
+    "test": "npm run build:mastery && node --test tests/*.test.js",
     "coverage": "node scripts/coverage.js",
     "web:export": "node scripts/export-for-angular.js",
     "web:start": "npm run web:export && npm --prefix web start",
     "web:build": "npm run web:export && npm --prefix web run build",
     "web:test": "npm run web:export && npm --prefix web test -- --watch=false --browsers=ChromeHeadless"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
   }
 }

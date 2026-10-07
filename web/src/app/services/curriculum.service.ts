@@ -3,6 +3,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { catchError, of, tap } from 'rxjs';
 
 import { CurriculumData, Skill } from '../domain/curriculum.types';
+import { CurriculumPort } from '../domain/mastery.types';
 
 @Injectable({ providedIn: 'root' })
 export class CurriculumService {
@@ -33,8 +34,27 @@ export class CurriculumService {
       .subscribe();
   }
 
+  skills(): Skill[] {
+    return this.data()?.skills ?? [];
+  }
+
+  byId(id: string): Skill | undefined {
+    return this.data()?.skills.find((s) => s.id === id);
+  }
+
+  asPort(): CurriculumPort | null {
+    const data = this.data();
+    if (!data) return null;
+    const byId: Record<string, Skill> = {};
+    for (const skill of data.skills) byId[skill.id] = skill;
+    return {
+      skills: data.skills,
+      byId,
+      stepSkills: (step) => data.skills.filter((s) => s.step === step),
+    };
+  }
+
   stepSkills(step: number): Skill[] {
-    const skills = this.data()?.skills ?? [];
-    return skills.filter((s) => s.step === step);
+    return this.skills().filter((s) => s.step === step);
   }
 }
