@@ -1,6 +1,7 @@
 import {
   AnswerOutcome,
   AnswerRecord,
+  AssessmentOffer,
   BankItem,
   CurriculumPort,
   LegacyProfile,
@@ -12,6 +13,7 @@ import {
 export type { CurriculumPort } from './mastery.types';
 
 const DAY = 24 * 60 * 60 * 1000;
+const PRACTICE_READY = 10;
 
 const own = (o: object, k: string) => Object.hasOwn(o, k);
 
@@ -26,6 +28,7 @@ const emptySkill = (): SkillState => ({
 
 export interface TacticalMasteryApi {
   DAY: number;
+  PRACTICE_READY: number;
   create(legacy?: LegacyProfile | null): MasteryProfile;
   valid(p: unknown): p is MasteryProfile;
   state(p: MasteryProfile, id: string): SkillState;
@@ -78,6 +81,22 @@ export interface TacticalMasteryApi {
   ): Record<string, unknown>;
   diagnose(p: MasteryProfile, bank: BankItem[], now?: number): Record<string, unknown>;
   answer(p: MasteryProfile, outcome: AnswerOutcome, now?: number): Record<string, unknown>;
+  assessmentReady(
+    p: MasteryProfile,
+    bank: BankItem[],
+    skillId: string,
+    now?: number
+  ): { kind: 'mastery' | 'maintenance' } | null;
+  computeOffer(p: MasteryProfile, bank: BankItem[], now?: number): AssessmentOffer | null;
+  offerProminence(offer: AssessmentOffer, now?: number): 'primary' | 'secondary';
+  deferOffer(p: MasteryProfile, now?: number): Record<string, unknown>;
+  acceptOffer(
+    p: MasteryProfile,
+    bank: BankItem[],
+    now?: number,
+    random?: () => number
+  ): Record<string, unknown>;
+  refreshOffer(p: MasteryProfile, bank: BankItem[], now?: number): void;
 }
 
 export function createTacticalMastery(C: CurriculumPort): TacticalMasteryApi {
@@ -87,6 +106,7 @@ export function createTacticalMastery(C: CurriculumPort): TacticalMasteryApi {
       skills: {},
       exposure: { ids: {}, positions: {} },
       pending: null,
+      assessmentOffer: null,
       session: null,
       reviewQueue: [],
       recent: [],
@@ -223,6 +243,16 @@ export function createTacticalMastery(C: CurriculumPort): TacticalMasteryApi {
       ) {
         return false;
       }
+    }
+    if (
+      profile.assessmentOffer != null &&
+      (!C.byId[profile.assessmentOffer.skillId] ||
+        !['mastery', 'maintenance'].includes(profile.assessmentOffer.kind) ||
+        !Number.isFinite(profile.assessmentOffer.offeredAt) ||
+        (profile.assessmentOffer.deferredAt != null &&
+          !Number.isFinite(profile.assessmentOffer.deferredAt)))
+    ) {
+      return false;
     }
     if (
       profile.pending &&
@@ -463,6 +493,76 @@ export function createTacticalMastery(C: CurriculumPort): TacticalMasteryApi {
     return { ok: true, item, pending: p.pending };
   }
 
+  function assessmentReady(
+    p: MasteryProfile,
+    bank: BankItem[],
+    skillId: string,
+    now = Date.now()
+  ): { kind: 'mastery' | 'maintenance' } | null {
+    if (!C.byId[skillId] || state(p, skillId).practiceScore < PRACTICE_READY) return null;
+    const kind = mastered(p, skillId) ? 'maintenance' : 'mastery';
+    if (kind === 'maintenance' && !mastered(p, skillId)) return null;
+    if (kind === 'mastery' && mastered(p, skillId)) return null;
+    return sessionReady(p, bank, skillId, kind, now) ? { kind } : null;
+  }
+
+  function computeOffer(p: MasteryProfile, bank: BankItem[], now = Date.now()): AssessmentOffer | null {
+    if (p.pending || p.session?.state === 'active') return null;
+    const step = activeStep(p);
+    for (const skill of C.stepSkills(step)) {
+      if (blockers(p, skill.id).length || !unlocked(p, skill.step)) continue;
+      const ready = assessmentReady(p, bank, skill.id, now);
+      if (ready) {
+        return { skillId: skill.id, kind: ready.kind, offeredAt: now, deferredAt: null };
+      }
+    }
+    return null;
+  }
+
+  function offerProminence(offer: AssessmentOffer, now = Date.now()): 'primary' | 'secondary' {
+    return offer.deferredAt != null && now < offer.deferredAt + DAY ? 'secondary' : 'primary';
+  }
+
+  function deferOffer(p: MasteryProfile, now = Date.now()) {
+    if (!p.assessmentOffer) return { ok: false, reason: 'no-offer' };
+    p.assessmentOffer = { ...p.assessmentOffer, deferredAt: now };
+    return { ok: true };
+  }
+
+  function acceptOffer(
+    p: MasteryProfile,
+    bank: BankItem[],
+    now = Date.now(),
+    random = Math.random
+  ) {
+    const offer = p.assessmentOffer;
+    if (!offer) return { ok: false, reason: 'no-offer' };
+    if (p.pending || p.session?.state === 'active') return { ok: false, reason: 'active' };
+    const step = C.byId[offer.skillId]?.step ?? activeStep(p);
+    const result = startSession(p, bank, step, now, random, offer.skillId);
+    if (result['ok']) p.assessmentOffer = null;
+    return result;
+  }
+
+  function refreshOffer(p: MasteryProfile, bank: BankItem[], now = Date.now()): void {
+    if (p.pending || p.session?.state === 'active') return;
+    const computed = computeOffer(p, bank, now);
+    if (!computed) {
+      p.assessmentOffer = null;
+      return;
+    }
+    const existing = p.assessmentOffer;
+    if (
+      existing &&
+      existing.skillId === computed.skillId &&
+      existing.kind === computed.kind
+    ) {
+      p.assessmentOffer = { ...computed, deferredAt: existing.deferredAt ?? null };
+    } else {
+      p.assessmentOffer = computed;
+    }
+  }
+
   function sessionReady(
     p: MasteryProfile,
     bank: BankItem[],
@@ -681,6 +781,7 @@ export function createTacticalMastery(C: CurriculumPort): TacticalMasteryApi {
 
   return {
     DAY,
+    PRACTICE_READY,
     create,
     valid,
     state,
@@ -701,5 +802,11 @@ export function createTacticalMastery(C: CurriculumPort): TacticalMasteryApi {
     nextSession,
     diagnose,
     answer,
+    assessmentReady,
+    computeOffer,
+    offerProminence,
+    deferOffer,
+    acceptOffer,
+    refreshOffer,
   };
 }

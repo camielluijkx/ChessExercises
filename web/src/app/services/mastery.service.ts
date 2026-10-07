@@ -3,6 +3,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { createTacticalMastery, TacticalMasteryApi } from '../domain/mastery';
 import {
   AnswerOutcome,
+  AssessmentOffer,
   BankItem,
   MasteryProfile,
   PendingAssessment,
@@ -61,6 +62,32 @@ export class MasteryService {
     return `Stap ${step} · ${mastered}/${total} beheerst`;
   });
 
+  readonly assessmentOffer = computed((): AssessmentOffer | null => {
+    this.profileTick();
+    return this.profileSignal()?.assessmentOffer ?? null;
+  });
+
+  readonly offerProminence = computed((): 'primary' | 'secondary' => {
+    const api = this.api;
+    const offer = this.assessmentOffer();
+    return api && offer ? api.offerProminence(offer) : 'primary';
+  });
+
+  readonly offerLabel = computed(() => {
+    const offer = this.assessmentOffer();
+    if (!offer) return '';
+    const label = this.skillLabel(offer.skillId);
+    return offer.kind === 'maintenance' ? `Onderhoud: ${label}` : `Beheersingstoets: ${label}`;
+  });
+
+  readonly offerDetail = computed(() => {
+    const offer = this.assessmentOffer();
+    if (!offer) return '';
+    return offer.kind === 'maintenance'
+      ? '10 opgaven · minimaal 8/10 correct'
+      : '20 opgaven in 2 reeksen · minimaal 18/20 correct';
+  });
+
   readonly storageNotice = computed(() => {
     const parts: string[] = [];
     if (!this.storageAvailable()) {
@@ -88,7 +115,8 @@ export class MasteryService {
   }
 
   hasOpenToets(): boolean {
-    return Boolean(this.profile()?.pending);
+    const profile = this.profileSignal();
+    return Boolean(profile?.pending || profile?.session?.state === 'active');
   }
 
   skillLabel(id: string): string {
@@ -119,13 +147,45 @@ export class MasteryService {
     return pick;
   }
 
-  recordPracticeResult(skillId: string, score: number): void {
+  recordPracticeResult(skillId: string, score: number, bank?: BankItem[]): void {
     const api = this.api;
     const profile = this.profileSignal();
     if (!api || !profile) return;
     api.practiceResult(profile, skillId, score);
+    if (bank?.length) api.refreshOffer(profile, bank);
     this.touchProfile();
     void this.persist();
+  }
+
+  refreshAssessmentOffer(bank: BankItem[]): void {
+    const api = this.api;
+    const profile = this.profileSignal();
+    if (!api || !profile || !bank.length) return;
+    api.refreshOffer(profile, bank);
+    this.touchProfile();
+    void this.persist();
+  }
+
+  deferAssessmentOffer(): boolean {
+    const api = this.api;
+    const profile = this.profileSignal();
+    if (!api || !profile) return false;
+    const result = api.deferOffer(profile);
+    if (result['ok']) {
+      this.touchProfile();
+      void this.persist();
+    }
+    return Boolean(result['ok']);
+  }
+
+  acceptAssessmentOffer(bank: BankItem[], now = Date.now()): Record<string, unknown> {
+    const api = this.api;
+    const profile = this.profileSignal();
+    if (!api || !profile) return { ok: false, reason: 'not-ready' };
+    const result = api.acceptOffer(profile, bank, now, Math.random);
+    if (result['ok']) this.touchProfile();
+    void this.persist();
+    return result;
   }
 
   pending(): PendingAssessment | null {
@@ -162,51 +222,28 @@ export class MasteryService {
     return parts.join(' · ');
   }
 
-  startToetsSession(
-    bank: BankItem[],
-    skillId?: string | null,
-    now = Date.now()
-  ): Record<string, unknown> {
-    const api = this.api;
-    const profile = this.profileSignal();
-    if (!api || !profile) return { ok: false, reason: 'not-ready' };
-    if (profile.pending) return { ok: true, resumed: true, pending: profile.pending };
-    const step = api.activeStep(profile);
-    let target = skillId ?? null;
-    if (!target) {
-      const skills = this.curriculum
-        .stepSkills(step)
-        .filter((s) => !api.mastered(profile, s.id) && !api.blockers(profile, s.id).length);
-      target =
-        skills.map((s) => api.target(profile, s.id)).find((id): id is string => Boolean(id)) ??
-        skills[0]?.id ??
-        null;
-    }
-    const result = api.startSession(profile, bank, step, now, Math.random, target);
-    if (result['ok']) this.touchProfile();
-    void this.persist();
-    return result;
-  }
-
   continueToets(bank: BankItem[], now = Date.now()): Record<string, unknown> {
     const api = this.api;
     const profile = this.profileSignal();
     if (!api || !profile) return { ok: false, reason: 'not-ready' };
     if (profile.pending) return { ok: false, reason: 'pending' };
-    const result =
-      profile.session?.state === 'active'
-        ? api.nextSession(profile, bank, now, Math.random)
-        : api.startSession(profile, bank, api.activeStep(profile), now, Math.random);
+    if (profile.session?.state !== 'active') return { ok: false, reason: 'no-session' };
+    const result = api.nextSession(profile, bank, now, Math.random);
     if (result['ok']) this.touchProfile();
     void this.persist();
     return result;
   }
 
-  submitToetsAnswer(outcome: AnswerOutcome, now = Date.now()): Record<string, unknown> {
+  submitToetsAnswer(
+    outcome: AnswerOutcome,
+    bank?: BankItem[],
+    now = Date.now()
+  ): Record<string, unknown> {
     const api = this.api;
     const profile = this.profileSignal();
     if (!api || !profile) return { ok: false, reason: 'not-ready' };
     const result = api.answer(profile, outcome, now);
+    if (bank?.length) api.refreshOffer(profile, bank);
     this.touchProfile();
     void this.persist();
     return result;
@@ -243,6 +280,7 @@ export class MasteryService {
       this.damagedSignal.set(outcome.damaged);
       const profile =
         outcome.profile ?? api.create(outcome.legacy);
+      if (profile.assessmentOffer === undefined) profile.assessmentOffer = null;
       this.profileSignal.set(profile);
       if (outcome.available) {
         const ok = await this.store.save(profile);

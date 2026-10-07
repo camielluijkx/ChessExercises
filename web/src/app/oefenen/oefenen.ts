@@ -229,7 +229,7 @@ export class Oefenen implements OnInit, OnDestroy {
     this.canInteract.set(false);
     this.puzzleDone.set(true);
     const score = this.attempt.errors ? 0 : this.attempt.hints ? 0.5 : 1;
-    this.mastery.recordPracticeResult(this.attempt.skill, score);
+    this.mastery.recordPracticeResult(this.attempt.skill, score, this.bankService.items());
   }
 
   private isMatingMove(fen: string, uci: string): boolean {

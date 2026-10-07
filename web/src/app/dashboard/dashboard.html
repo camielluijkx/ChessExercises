@@ -5,6 +5,22 @@
     <p class="actions-row">
       <a [routerLink]="doorgaanLink()" class="doorgaan">Doorgaan</a>
     </p>
+    @if (assessmentOffer()) {
+      <section
+        class="toetsaanbod"
+        [class.toetsaanbod-secondary]="offerProminence() === 'secondary'"
+        aria-label="Toetsaanbod"
+      >
+        <p class="offer-label">{{ offerLabel() }}</p>
+        <p class="offer-detail muted">{{ offerDetail() }}</p>
+        <p class="actions-row offer-actions">
+          <button type="button" class="accept-offer" (click)="acceptOffer()">
+            {{ acceptOfferLabel() }}
+          </button>
+          <button type="button" class="defer-offer" (click)="deferOffer()">Later</button>
+        </p>
+      </section>
+    }
   }
 
   @if (curriculumReady() && masteryReady()) {

@@ -26,6 +26,7 @@ function validProfile(over: Partial<MasteryProfile> = {}): MasteryProfile {
     },
     exposure: { ids: {}, positions: {} },
     pending: null,
+    assessmentOffer: null,
     session: null,
     reviewQueue: [],
     recent: [],

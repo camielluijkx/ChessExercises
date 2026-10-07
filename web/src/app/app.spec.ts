@@ -18,6 +18,6 @@ describe('App', () => {
     expect(text).toContain('Schaak Oefeningen');
     expect(text).toContain('Dashboard');
     expect(text).toContain('Oefenen');
-    expect(text).toContain('Toets');
+    expect(text).not.toContain('Toets');
   });
 });

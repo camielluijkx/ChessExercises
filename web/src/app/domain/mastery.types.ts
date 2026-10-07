@@ -97,11 +97,19 @@ export interface ReviewQueueItem {
   reason: string;
 }
 
+export interface AssessmentOffer {
+  skillId: string;
+  kind: 'mastery' | 'maintenance';
+  offeredAt: number;
+  deferredAt?: number | null;
+}
+
 export interface MasteryProfile {
   version: 2;
   skills: Record<string, SkillState>;
   exposure: ExposureMap;
   pending: PendingAssessment | null;
+  assessmentOffer: AssessmentOffer | null;
   session: MasterySession | null;
   reviewQueue: ReviewQueueItem[];
   recent: string[];

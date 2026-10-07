@@ -109,3 +109,37 @@ test('malformed saved sessions and incomplete mastery proofs are rejected',()=>{
   p.session=null;p.skills['s1.mate']={status:'mastered',practice:0,practiceScore:0,history:[],cycle:null,proof:{count:20}};
   assert.equal(M.valid(p),false);
 });
+test('toetsaanbod requires ten correct practice scores before readiness',()=>{
+  const p=M.create(),b=pool('s1.mate');
+  for(let i=0;i<9;i++)M.practiceResult(p,'s1.mate',1);
+  assert.equal(M.assessmentReady(p,b,'s1.mate'),null);
+  M.practiceResult(p,'s1.mate',1);
+  assert.equal(M.assessmentReady(p,b,'s1.mate')?.kind,'mastery');
+  assert.equal(M.computeOffer(p,b)?.skillId,'s1.mate');
+});
+test('deferOffer makes toetsaanbod secondary until twenty-four hours pass',()=>{
+  const p=M.create(),b=pool('s1.mate');
+  for(let i=0;i<10;i++)M.practiceResult(p,'s1.mate',1);
+  M.refreshOffer(p,b,100);
+  assert.equal(M.offerProminence(p.assessmentOffer,100),'primary');
+  M.deferOffer(p,200);
+  assert.equal(M.offerProminence(p.assessmentOffer,200),'secondary');
+  assert.equal(M.offerProminence(p.assessmentOffer,200+M.DAY-1),'secondary');
+  assert.equal(M.offerProminence(p.assessmentOffer,200+M.DAY),'primary');
+});
+test('acceptOffer starts a session and clears the toetsaanbod',()=>{
+  const p=M.create(),b=pool('s1.mate');
+  for(let i=0;i<10;i++)M.practiceResult(p,'s1.mate',1);
+  M.refreshOffer(p,b,100);
+  assert.ok(p.assessmentOffer);
+  assert.equal(M.acceptOffer(p,b,100,()=>0).ok,true);
+  assert.equal(p.assessmentOffer,null);
+  assert.equal(p.session.state,'active');
+  assert.ok(p.pending);
+});
+test('computeOffer skips while pending or an active session exists',()=>{
+  const p=M.create(),b=pool('s1.mate');
+  for(let i=0;i<10;i++)M.practiceResult(p,'s1.mate',1);
+  M.start(p,b,'s1.mate',100);
+  assert.equal(M.computeOffer(p,b,100),null);
+});

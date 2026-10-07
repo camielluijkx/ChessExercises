@@ -26,6 +26,7 @@ var __MasteryBoot = (() => {
 
   // web/src/app/domain/mastery.ts
   var DAY = 24 * 60 * 60 * 1e3;
+  var PRACTICE_READY = 10;
   var own = (o, k) => Object.hasOwn(o, k);
   var emptySkill = () => ({
     status: "learning",
@@ -42,6 +43,7 @@ var __MasteryBoot = (() => {
         skills: {},
         exposure: { ids: {}, positions: {} },
         pending: null,
+        assessmentOffer: null,
         session: null,
         reviewQueue: [],
         recent: [],
@@ -98,6 +100,9 @@ var __MasteryBoot = (() => {
         if (session.state === "complete" && !session.slots.every((s) => session.counts[s.id] === s.quota)) {
           return false;
         }
+      }
+      if (profile.assessmentOffer != null && (!C.byId[profile.assessmentOffer.skillId] || !["mastery", "maintenance"].includes(profile.assessmentOffer.kind) || !Number.isFinite(profile.assessmentOffer.offeredAt) || profile.assessmentOffer.deferredAt != null && !Number.isFinite(profile.assessmentOffer.deferredAt))) {
+        return false;
       }
       if (profile.pending && (!C.byId[profile.pending.skillId] || !["mastery", "maintenance", "diagnostic"].includes(profile.pending.kind) || !profile.pending.puzzle || typeof profile.pending.puzzle.id !== "string" || typeof profile.pending.position !== "string" || !Array.isArray(profile.pending.line) || profile.pending.line.length > 15 || profile.pending.draft !== void 0 && typeof profile.pending.draft !== "string" || !profile.pending.line.every(
         (m) => typeof m === "string" && /^[a-h][1-8][a-h][1-8][qrbn]?$/.test(m)
@@ -278,6 +283,56 @@ var __MasteryBoot = (() => {
         startedAt: now
       };
       return { ok: true, item, pending: p.pending };
+    }
+    function assessmentReady(p, bank, skillId, now = Date.now()) {
+      if (!C.byId[skillId] || state(p, skillId).practiceScore < PRACTICE_READY) return null;
+      const kind = mastered(p, skillId) ? "maintenance" : "mastery";
+      if (kind === "maintenance" && !mastered(p, skillId)) return null;
+      if (kind === "mastery" && mastered(p, skillId)) return null;
+      return sessionReady(p, bank, skillId, kind, now) ? { kind } : null;
+    }
+    function computeOffer(p, bank, now = Date.now()) {
+      if (p.pending || p.session?.state === "active") return null;
+      const step = activeStep(p);
+      for (const skill of C.stepSkills(step)) {
+        if (blockers(p, skill.id).length || !unlocked(p, skill.step)) continue;
+        const ready = assessmentReady(p, bank, skill.id, now);
+        if (ready) {
+          return { skillId: skill.id, kind: ready.kind, offeredAt: now, deferredAt: null };
+        }
+      }
+      return null;
+    }
+    function offerProminence(offer, now = Date.now()) {
+      return offer.deferredAt != null && now < offer.deferredAt + DAY ? "secondary" : "primary";
+    }
+    function deferOffer(p, now = Date.now()) {
+      if (!p.assessmentOffer) return { ok: false, reason: "no-offer" };
+      p.assessmentOffer = { ...p.assessmentOffer, deferredAt: now };
+      return { ok: true };
+    }
+    function acceptOffer(p, bank, now = Date.now(), random = Math.random) {
+      const offer = p.assessmentOffer;
+      if (!offer) return { ok: false, reason: "no-offer" };
+      if (p.pending || p.session?.state === "active") return { ok: false, reason: "active" };
+      const step = C.byId[offer.skillId]?.step ?? activeStep(p);
+      const result = startSession(p, bank, step, now, random, offer.skillId);
+      if (result["ok"]) p.assessmentOffer = null;
+      return result;
+    }
+    function refreshOffer(p, bank, now = Date.now()) {
+      if (p.pending || p.session?.state === "active") return;
+      const computed = computeOffer(p, bank, now);
+      if (!computed) {
+        p.assessmentOffer = null;
+        return;
+      }
+      const existing = p.assessmentOffer;
+      if (existing && existing.skillId === computed.skillId && existing.kind === computed.kind) {
+        p.assessmentOffer = { ...computed, deferredAt: existing.deferredAt ?? null };
+      } else {
+        p.assessmentOffer = computed;
+      }
     }
     function sessionReady(p, bank, id, kind, now) {
       const s = state(p, id);
@@ -466,6 +521,7 @@ var __MasteryBoot = (() => {
     }
     return {
       DAY,
+      PRACTICE_READY,
       create,
       valid,
       state,
@@ -485,7 +541,13 @@ var __MasteryBoot = (() => {
       startSession,
       nextSession,
       diagnose,
-      answer
+      answer,
+      assessmentReady,
+      computeOffer,
+      offerProminence,
+      deferOffer,
+      acceptOffer,
+      refreshOffer
     };
   }
 

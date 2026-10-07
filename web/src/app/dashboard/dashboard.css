@@ -21,6 +21,69 @@
   background: #234428;
 }
 
+.toetsaanbod {
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  border-left: 3px solid #2c5530;
+  background: #f4f7f4;
+}
+
+.toetsaanbod-secondary {
+  border-left-color: #888;
+  background: #f7f7f7;
+}
+
+.offer-label {
+  margin: 0 0 0.25rem;
+  font-weight: 600;
+}
+
+.offer-detail {
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+}
+
+.offer-actions {
+  margin: 0;
+}
+
+.accept-offer,
+.defer-offer {
+  margin-right: 0.5rem;
+  padding: 0.45rem 0.9rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.accept-offer {
+  background: #2c5530;
+  color: #fff;
+}
+
+.accept-offer:hover {
+  background: #234428;
+}
+
+.toetsaanbod-secondary .accept-offer {
+  background: #666;
+}
+
+.toetsaanbod-secondary .accept-offer:hover {
+  background: #555;
+}
+
+.defer-offer {
+  background: transparent;
+  color: #444;
+  border: 1px solid #bbb;
+}
+
+.defer-offer:hover {
+  background: #eee;
+}
+
 .progress {
   margin: 0 0 0.35rem;
   font-size: 1.05rem;

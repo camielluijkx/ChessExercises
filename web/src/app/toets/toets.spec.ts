@@ -197,4 +197,12 @@ describe('Toets', () => {
     expect(input?.value).toBe('f7g7');
     expect(TestBed.inject(MasteryService).pending()?.line).toEqual(['f7g7']);
   });
+
+  it('blokkeert vrije toetsstart zonder pending of actieve sessie', async () => {
+    await configure();
+    const fixture = await readyToets();
+    const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
+    expect(text).toContain('Geen actieve toets');
+    expect(text).toContain('toetsaanbod op het dashboard');
+  });
 });

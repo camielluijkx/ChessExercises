@@ -135,7 +135,10 @@ export class Toets implements OnInit, OnDestroy {
 
     const ctx = this.captureFeedbackContext(pending);
     const gradeResult = await grade(item, line);
-    const answerResult = this.mastery.submitToetsAnswer(gradeResult.outcome);
+    const answerResult = this.mastery.submitToetsAnswer(
+      gradeResult.outcome,
+      this.bankService.items()
+    );
     this.showFeedback(ctx, gradeResult.outcome, answerResult);
     this.interactionLocked.set(false);
   }
@@ -144,7 +147,7 @@ export class Toets implements OnInit, OnDestroy {
     const pending = this.mastery.pending();
     if (!pending || this.interactionLocked()) return;
     const ctx = this.captureFeedbackContext(pending);
-    const answerResult = this.mastery.submitToetsAnswer('skip');
+    const answerResult = this.mastery.submitToetsAnswer('skip', this.bankService.items());
     this.showFeedback(ctx, 'skip', answerResult);
     this.canInteract.set(false);
   }
@@ -206,19 +209,26 @@ export class Toets implements OnInit, OnDestroy {
       this.loadCurrentPuzzle();
       return;
     }
-    const result = this.mastery.startToetsSession(this.bankService.items());
-    if (result['ok']) {
-      this.phase.set('active');
-      this.canInteract.set(true);
-      this.loadCurrentPuzzle();
+    if (this.mastery.session()?.state === 'active') {
+      const result = this.mastery.continueToets(this.bankService.items());
+      if (result['ok']) {
+        this.phase.set('active');
+        this.canInteract.set(true);
+        this.loadCurrentPuzzle();
+        return;
+      }
+      if (result['reason'] === 'waiting') {
+        this.waitingUntil.set(result['until'] as number);
+        this.phase.set('waiting');
+        return;
+      }
+      this.blockedMessage.set(this.formatBlocked(result));
+      this.phase.set('blocked');
       return;
     }
-    if (result['reason'] === 'waiting') {
-      this.waitingUntil.set(result['until'] as number);
-      this.phase.set('waiting');
-      return;
-    }
-    this.blockedMessage.set(this.formatBlocked(result));
+    this.blockedMessage.set(
+      'Geen actieve toets. Accepteer het toetsaanbod op het dashboard.'
+    );
     this.phase.set('blocked');
   }
 

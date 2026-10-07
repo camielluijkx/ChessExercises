@@ -11,6 +11,7 @@ function baseProfile(over: Partial<MasteryProfile> = {}): MasteryProfile {
     skills: {},
     exposure: { ids: {}, positions: {} },
     pending: null,
+    assessmentOffer: null,
     session: null,
     reviewQueue: [],
     recent: [],

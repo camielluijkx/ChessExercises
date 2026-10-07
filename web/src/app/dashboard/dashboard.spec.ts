@@ -175,4 +175,52 @@ describe('Dashboard', () => {
     const link = (fixture.nativeElement as HTMLElement).querySelector('a.doorgaan');
     expect(link?.getAttribute('href')).toContain('/toets');
   });
+
+  function stubOffer(cmp: Dashboard): void {
+    Object.defineProperty(cmp, 'assessmentOffer', {
+      configurable: true,
+      value: () => ({
+        skillId: 's1.mate',
+        kind: 'mastery' as const,
+        offeredAt: Date.now(),
+        deferredAt: null,
+      }),
+    });
+    Object.defineProperty(cmp, 'offerProminence', {
+      configurable: true,
+      value: () => 'primary' as const,
+    });
+    Object.defineProperty(cmp, 'offerLabel', {
+      configurable: true,
+      value: () => 'Beheersingstoets: Mat in één',
+    });
+    Object.defineProperty(cmp, 'offerDetail', {
+      configurable: true,
+      value: () => '20 opgaven in 2 reeksen · minimaal 18/20 correct',
+    });
+  }
+
+  it('toont toetsaanbod wanneer aanwezig', async () => {
+    const fixture = await readyDashboard();
+    stubOffer(fixture.componentInstance);
+    fixture.detectChanges();
+    const root = fixture.nativeElement as HTMLElement;
+    expect(root.querySelector('.toetsaanbod')).not.toBeNull();
+    expect(root.textContent).toContain('Beheersingstoets: Mat in één');
+    expect(root.textContent).toContain('Start beheersingstoets');
+    expect(root.textContent).toContain('Later');
+  });
+
+  it('Later roept deferAssessmentOffer aan', async () => {
+    const mastery = TestBed.inject(MasteryService);
+    const deferSpy = spyOn(mastery, 'deferAssessmentOffer').and.returnValue(true);
+    const fixture = await readyDashboard();
+    stubOffer(fixture.componentInstance);
+    fixture.detectChanges();
+    const later = (fixture.nativeElement as HTMLElement).querySelector(
+      'button.defer-offer'
+    ) as HTMLButtonElement;
+    later.click();
+    expect(deferSpy).toHaveBeenCalled();
+  });
 });

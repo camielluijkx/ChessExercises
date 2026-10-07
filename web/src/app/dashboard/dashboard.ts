@@ -1,6 +1,7 @@
 import { Component, computed, effect, inject, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
+import { AssessmentBankService } from '../services/assessment-bank.service';
 import { CurriculumService } from '../services/curriculum.service';
 import { MasteryService } from '../services/mastery.service';
 import { PuzzleBankService } from '../services/puzzle-bank.service';
@@ -13,9 +14,11 @@ import { PuzzleBankService } from '../services/puzzle-bank.service';
   styleUrl: './dashboard.css',
 })
 export class Dashboard implements OnInit {
+  private readonly router = inject(Router);
   private readonly curriculum = inject(CurriculumService);
   private readonly mastery = inject(MasteryService);
   private readonly puzzleBank = inject(PuzzleBankService);
+  private readonly bankService = inject(AssessmentBankService);
 
   readonly activeStep = this.mastery.activeStep;
   readonly activeStepLeerdoelen = this.mastery.activeStepSkills;
@@ -34,10 +37,39 @@ export class Dashboard implements OnInit {
     this.mastery.hasOpenToets() ? '/toets' : '/oefenen'
   );
 
+  readonly assessmentOffer = this.mastery.assessmentOffer;
+  readonly offerProminence = this.mastery.offerProminence;
+  readonly offerLabel = this.mastery.offerLabel;
+  readonly offerDetail = this.mastery.offerDetail;
+
+  readonly acceptOfferLabel = computed(() => {
+    const offer = this.assessmentOffer();
+    return offer?.kind === 'maintenance' ? 'Start onderhoud' : 'Start beheersingstoets';
+  });
+
   constructor() {
     effect(() => {
       if (this.curriculum.ready()) this.mastery.init();
     });
+    effect(() => {
+      if (
+        !this.curriculum.ready() ||
+        !this.mastery.ready() ||
+        !this.bankService.ready()
+      ) {
+        return;
+      }
+      this.mastery.refreshAssessmentOffer(this.bankService.items());
+    });
+  }
+
+  deferOffer(): void {
+    this.mastery.deferAssessmentOffer();
+  }
+
+  acceptOffer(): void {
+    const result = this.mastery.acceptAssessmentOffer(this.bankService.items());
+    if (result['ok']) void this.router.navigate(['/toets']);
   }
 
   ngOnInit(): void {
