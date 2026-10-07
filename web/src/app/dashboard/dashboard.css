@@ -112,7 +112,27 @@
 }
 
 .leerdoelen li {
-  margin: 0.2rem 0;
+  margin: 0.35rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.leerdoel-label {
+  font-weight: 600;
+}
+
+.leerdoel-status {
+  font-size: 0.92rem;
+}
+
+.remediation-notice {
+  margin: 0 0 1rem;
+  padding: 0.5rem 0.75rem;
+  border-left: 3px solid #8b5a1a;
+  background: #faf6f0;
+  color: #5a3a10;
+  font-size: 0.95rem;
 }
 
 .bank-status {

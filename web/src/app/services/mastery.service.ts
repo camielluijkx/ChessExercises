@@ -14,6 +14,18 @@ import { Skill } from '../domain/curriculum.types';
 import { CurriculumService } from './curriculum.service';
 import { ProfileStore } from './profile-store.service';
 
+const STATUS_LABEL: Record<'learning' | 'mastered' | 'remediation', string> = {
+  learning: 'Nog te beheersen',
+  mastered: 'Beheerst',
+  remediation: 'Gerichte herhaling nodig',
+};
+
+interface SkillStatusRow {
+  id: string;
+  label: string;
+  detail: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class MasteryService {
   private readonly curriculum = inject(CurriculumService);
@@ -86,6 +98,48 @@ export class MasteryService {
     return offer.kind === 'maintenance'
       ? '10 opgaven · minimaal 8/10 correct'
       : '20 opgaven in 2 reeksen · minimaal 18/20 correct';
+  });
+
+  readonly activeStepSkillRows = computed((): SkillStatusRow[] => {
+    this.profileTick();
+    const api = this.api;
+    const profile = this.profileSignal();
+    const skills = this.activeStepSkills();
+    if (!api || !profile) {
+      return skills.map((s) => ({
+        id: s.id,
+        label: s.label.nl,
+        detail: STATUS_LABEL.learning,
+      }));
+    }
+    const offer = profile.assessmentOffer;
+    return skills.map((skill) => {
+      const state = api.state(profile, skill.id);
+      const parts = [STATUS_LABEL[state.status]];
+      const cycle = state.cycle;
+      if (cycle?.state === 'waiting' && cycle.firstCompletedAt != null) {
+        const until = cycle.firstCompletedAt + api.DAY;
+        parts.push(`Tweede reeks beschikbaar vanaf ${new Date(until).toLocaleString('nl-NL')}`);
+      }
+      if (offer?.skillId === skill.id) {
+        parts.push('Toetsaanbod');
+      }
+      return { id: skill.id, label: skill.label.nl, detail: parts.join(' · ') };
+    });
+  });
+
+  readonly remediationNotice = computed((): string | null => {
+    this.profileTick();
+    const api = this.api;
+    const profile = this.profileSignal();
+    if (!api || !profile) return null;
+    const checks = api.prerequisiteChecks(profile);
+    if (!checks.length) return null;
+    return (
+      'Eerst trainen we de ontbrekende basisvaardigheid: ' +
+      checks.map((id) => this.skillLabel(id)).join(', ') +
+      '. Kies Doorgaan om gericht te oefenen.'
+    );
   });
 
   readonly storageNotice = computed(() => {

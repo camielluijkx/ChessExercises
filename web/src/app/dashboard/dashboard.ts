@@ -21,7 +21,8 @@ export class Dashboard implements OnInit {
   private readonly bankService = inject(AssessmentBankService);
 
   readonly activeStep = this.mastery.activeStep;
-  readonly activeStepLeerdoelen = this.mastery.activeStepSkills;
+  readonly activeStepSkillRows = this.mastery.activeStepSkillRows;
+  readonly remediationNotice = this.mastery.remediationNotice;
   readonly progressLabel = this.mastery.progressLabel;
   readonly curriculumReady = this.curriculum.ready;
   readonly curriculumError = this.curriculum.error;

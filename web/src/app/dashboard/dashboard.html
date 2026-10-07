@@ -28,6 +28,9 @@
     @if (storageNotice()) {
       <p class="storage-notice" role="status">{{ storageNotice() }}</p>
     }
+    @if (remediationNotice()) {
+      <p class="remediation-notice" role="status">{{ remediationNotice() }}</p>
+    }
   }
 
   <section class="stap" [attr.aria-labelledby]="'stap-' + activeStep() + '-heading'">
@@ -38,8 +41,11 @@
       <p class="muted">Leerdoelen laden…</p>
     } @else {
       <ul class="leerdoelen">
-        @for (skill of activeStepLeerdoelen(); track skill.id) {
-          <li>{{ skill.label.nl }}</li>
+        @for (row of activeStepSkillRows(); track row.id) {
+          <li>
+            <span class="leerdoel-label">{{ row.label }}</span>
+            <span class="leerdoel-status muted">{{ row.detail }}</span>
+          </li>
         }
       </ul>
     }

@@ -204,5 +204,40 @@ describe('Toets', () => {
     const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
     expect(text).toContain('Geen actieve toets');
     expect(text).toContain('toetsaanbod op het dashboard');
+    expect(text).not.toMatch(/instaptoets/i);
+  });
+
+  it('toont Onderhoud als subtitel bij maintenance-toets', async () => {
+    const day = 24 * 60 * 60 * 1000;
+    const profile = pendingProfile();
+    profile.pending!.kind = 'maintenance';
+    profile.session!.slots = [{ id: 's1.mate', kind: 'maintenance', quota: 10 }];
+    profile.skills['s1.mate'].status = 'mastered';
+    profile.skills['s1.mate'].proof = {
+      count: 20,
+      correct: 18,
+      firstCompletedAt: 1,
+      completedAt: 1 + day,
+    };
+    profile.skills['s1.mate'].cycle = {
+      id: 'c1',
+      kind: 'maintenance',
+      state: 'active',
+      phase: 1,
+      answers: [],
+      firstCompletedAt: null,
+    };
+    await configure(profile);
+    const fixture = await readyToets();
+    const subtitle = (fixture.nativeElement as HTMLElement).querySelector('.subtitle');
+    expect(subtitle?.textContent?.trim()).toBe('Onderhoud');
+    expect((fixture.nativeElement as HTMLElement).textContent).not.toMatch(/instaptoets/i);
+  });
+
+  it('toont Beheersingstoets als subtitel bij mastery-toets', async () => {
+    await configure(pendingProfile());
+    const fixture = await readyToets();
+    const subtitle = (fixture.nativeElement as HTMLElement).querySelector('.subtitle');
+    expect(subtitle?.textContent?.trim()).toBe('Beheersingstoets');
   });
 });

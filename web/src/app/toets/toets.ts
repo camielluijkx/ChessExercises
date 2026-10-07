@@ -51,6 +51,14 @@ export class Toets implements OnInit, OnDestroy {
   readonly waitingUntil = signal<number | null>(null);
   readonly blockedMessage = signal('');
   readonly counterLabel = computed(() => this.mastery.toetsCounterLabel());
+  readonly modeSubtitle = computed(() => {
+    const profile = this.mastery.profile();
+    const pending = profile?.pending;
+    if (pending?.kind === 'maintenance') return 'Onderhoud';
+    const session = profile?.session;
+    const slot = session?.slots?.find((s) => s.id === pending?.skillId) ?? session?.slots?.[0];
+    return slot?.kind === 'maintenance' ? 'Onderhoud' : 'Beheersingstoets';
+  });
   readonly variantInput = signal('');
   readonly boardFen = signal('');
   readonly boardOrientation = signal<'w' | 'b'>('w');
